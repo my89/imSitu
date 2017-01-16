@@ -1,7 +1,14 @@
 # imSitu
-Suport files for the imSitu dataset. 
+Suport, annotation, and evaluation files for the imSitu dataset. 
 
-Annotation files and evaluation scripts of imsitu. 
+If you use the imSitu dataset in your research, please cite:
+
+@inproceedings{yatskar2016,
+  title={Situation Recognition: Visual Semantic Role Labeling for Image Understanding},
+  author={Yatskar, Mark and Zettlemoyer, Luke and Farhadi, Ali},
+  booktitle={Conference on Computer Vision and Pattern Recognition},
+  year={2016}
+}
 
 ## imsitu_space.json
 A json file defining the metadata used for imSitu. 
@@ -20,7 +27,7 @@ verbs = imsitu["verbs"]
 
 verbs["clinging"]
 
-# {u'abstract': u'an AGENT cilngs to the CLUNGTO at a PLACE',
+# {u'abstract': u'an AGENT clings to the CLUNGTO at a PLACE',
 #  u'def': u'stick to',
 #  u'framenet': u'Retaining',
 #  u'order': [u'agent', u'clungto', u'place'],
@@ -54,10 +61,13 @@ train['clinging_250.jpg']
 ```
 
 ## images
-Original downloaded images can be found here (34G) :
+Images resized to 256x256 here (3.7G):
 
 https://s3.amazonaws.com/my89-frame-annotation/public/of500_images_resized.tar
 
-and images resized to 256x256 here (3.7G):
+Original images can be found here (34G) :
 
 https://s3.amazonaws.com/my89-frame-annotation/public/of500_images_resized.tar
+
+## evaluation
+See the readme in evaluation directory
