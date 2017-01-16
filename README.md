@@ -1,14 +1,16 @@
 # imSitu
 Suport, annotation, and evaluation files for the imSitu dataset. 
 
-If you use the imSitu dataset in your research, please cite:
+If you use the imSitu dataset in your research, please cite our CVPR '16 paper:
 
+```
 @inproceedings{yatskar2016,
   title={Situation Recognition: Visual Semantic Role Labeling for Image Understanding},
   author={Yatskar, Mark and Zettlemoyer, Luke and Farhadi, Ali},
   booktitle={Conference on Computer Vision and Pattern Recognition},
   year={2016}
 }
+```
 
 ## imsitu_space.json
 A json file defining the metadata used for imSitu. 
