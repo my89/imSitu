@@ -6,7 +6,7 @@ Annotation files and evaluation scripts of imsitu.
 ## imsitu_space.json
 A json file defining the metadata used for imSitu. 
 
-Each verb in imSitu is mapped to a FrameNet frame, for example, 'swimming' is mapped to Self_motion, and each of its roles is mapped to a role associated with that frame, for example, the imSitu role 'agent' for swimming is mapped to the framenet role 'self_mover'. Each noun in space corresponds to a synset from Wordnet.
+Each verb in imSitu is mapped to a FrameNet frame, for example, 'clinging' is mapped to Retaining, and each of its roles is mapped to a role associated with that frame, for example, the imSitu role 'clungto' for clinging is mapped to the framenet role 'theme'. Each noun in space corresponds to a synset from Wordnet.
  
 imsitu_space.json contians these mappings, as well as definitions of verbs, roles and an abstract sentence presented to turkers to help them understand the roles quickly. Furthermore, it contains definitions of nouns and glosses for those nouns that were presented to turkers.
  
@@ -18,13 +18,20 @@ imsitu = json.load(open("imsitu_space.json"))
 nouns = imsitu["nouns"]
 verbs = imsitu["verbs"]
 
-print verbs["swimming"]
+verbs["clinging"]
 
-#{u'roles': {u'place': {u'framenet': u'place', u'def': u'The location where the swim event is happening'}, 
-#u'agent': {u'framenet': u'self_mover', u'def': u'The entity doing the swim action'}}, 
-#u'framenet': u'Self_motion',u'abstract': u'the AGENT swims in a PLACE.', u'order': [u'agent', u'place'], u'def': u'propel oneself through water by bodily movement'}
+# {u'abstract': u'an AGENT cilngs to the CLUNGTO at a PLACE',
+#  u'def': u'stick to',
+#  u'framenet': u'Retaining',
+#  u'order': [u'agent', u'clungto', u'place'],
+#  u'roles': {
+#   u'agent': {u'def': u'The entity doing the cling action',u'framenet': u'agent'},
+#   u'clungto': {u'def': u'The entity the AGENT is clinging to',u'framenet': u'theme'},
+#   u'place': {u'def': u'The location where the cling event is happening',u'framenet': u'place'}
+#  }
+# }
 
-print nouns["n02129165"]
+nouns["n02129165"]
 
 #{u'def': u'large gregarious predatory feline of Africa and India having a tawny coat with a shaggy mane in the male',
 # u'gloss': [u'lion', u'king of beasts', u'Panthera leo']}
@@ -32,7 +39,7 @@ print nouns["n02129165"]
 ```
 ## train.json, dev.json, test.json
 
-These files contain annotations for the train/dev/test set. Each image in the imSitu dataset is annotated with three frames corresponding to one verb.  
+These files contain annotations for the train/dev/test set. Each image in the imSitu dataset is annotated with three frames corresponding to one verb. Each annotation contains a noun value from Wordnet, or the empty string, indicating empty, for every role associated with the verb
 
 ```
 import json
