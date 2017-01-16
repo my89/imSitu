@@ -72,4 +72,93 @@ Original images can be found here (34G) :
 https://s3.amazonaws.com/my89-frame-annotation/public/of500_images_resized.tar
 
 ## evaluation
-See the readme in evaluation directory
+
+Evaluation scripts in the style presented in https://arxiv.org/pdf/1612.00901v1.pdf
+
+(Note, this is slightly simplified from the CVPR '16. We removed the value-full measure that computes how often an entire frame output matches a references and instead just report value-all, how often the system output matches on all roles using any annotation. This was called value-any in the original paper).  
+
+```
+#download output of baseline crf on the dev set
+wget https://s3.amazonaws.com/my89-frame-annotation/public/crf.output.tar.gz
+tar -xvf crf.output.tar.gz
+
+# evaluate crf.output against dev set output
+python evaluation/evaluation.py --sys_output crf.output
+
+reading input ... 12700353/12700800 (100.00%) 12700800
+top-1
+	verb      	32.25%
+	value     	24.56%
+	value-all 	14.28%
+top-5
+	verb      	58.64%
+	value     	42.68%
+	value-all 	22.75%
+gold verbs
+	value     	65.90%
+	value-all 	29.50%
+summary
+	mean      	36.32%
+
+```
+The script expects the system to output one prediction per verb per image in ranked order based on the system preferance. For example:
+
+```
+> head crf.output
+
+tattooing_117.jpg	arranging	item	n11669921	tool	n05564590	place	n04105893	agent	n10787470
+tattooing_117.jpg	tattooing	tool	n03816136	place	n04105893	target	n10787470	agent	n10287213
+tattooing_117.jpg	mending	item	n03309808	tool	null	place	n08588294	agent	n10787470
+tattooing_117.jpg	hunching	place	n04105893	surface	n02818832	agent	n10787470
+tattooing_117.jpg	clinging	clungto	n10287213	place	n04105893	agent	n10787470
+tattooing_117.jpg	admiring	admired	n09827683	place	n04105893	agent	n10787470
+tattooing_117.jpg	spanking	tool	n05564590	place	n03679712	victim	n10787470	agent	n10287213
+tattooing_117.jpg	autographing	item	n06410904	place	n04105893	agent	n10787470	receiver	n10787470
+tattooing_117.jpg	instructing	place	n04105893	student	n10787470	agent	n10787470
+tattooing_117.jpg	bandaging	place	n04105893	victim	n10787470	agent	n10129825
+```
+Each line should contain an image in the evaluation set (in this case the dev set) followed by a verb and pairs of roles and nouns corresponding to the roles for that verb. Each of these should be tab seperated. For the dev/test set, the file should contain 12700800 lines. 
+
+To evaluate on the test set:
+ 
+```
+python evaluation/evaluation.py --sys_output crf_test.output --ref_set test.json
+reading input ... 12700301/12700800 (100.00%) 12700800
+top-1
+	verb      	32.34%
+	value     	24.64%
+	value-all 	14.19%
+top-5
+	verb      	58.88%
+	value     	42.76%
+	value-all 	22.55%
+gold verbs
+	value     	65.66%
+	value-all 	28.96%
+summary
+	mean      	36.25%
+```
+
+To evaluate on subsets of the data based on frequency criterion of verb-role-noun combinations in the training set. For example, to evaluate on images that require prediction of verb-role-noun combinations occuring between 0 and 10 times on the training set (inclusive)
+
+```
+python evaluation/evaluate.py --sys_output crf.output --sparsity_min_max 0 10
+applying sparsity threshold >= 0 and <= 10
+total examples = 8569 where verb-role-noun occurance <= 10 and >= 0 
+reading input ... 12700353/12700800 (100.00%) 12700800
+top-1
+	verb      	19.89%
+	value     	11.68%
+	value-all 	2.85%
+top-5
+	verb      	44.00%
+	value     	24.93%
+	value-all 	6.16%
+gold verbs
+	value     	50.80%
+	value-all 	9.97%
+summary
+	mean      	21.28%
+```
+
+

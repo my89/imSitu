@@ -145,14 +145,15 @@ if len(sys) != len(ref):
 
 tot = 0
 hist_points = sorted(hist.keys())
-if len(hist_points) > 0: 
+if len(hist_points) > 1: 
   print "-- frequency histogram --"
   print "n \t %images <= n  \t % @ n"
 
-for t in hist_points:
-  hist_images = hist[t]
-  tot += len(hist_images)
-  print str(t)  + "\t" + str(float(tot)/25200*100) + "\t" + str(len(hist_images)/25200.0*100) 
+if len(hist_points) > 1:
+  for t in hist_points:
+    hist_images = hist[t]
+    tot += len(hist_images)
+    print str(t)  + "\t" + str(float(tot)/25200*100) + "\t" + str(len(hist_images)/25200.0*100) 
 
 #print hist[231]
 
@@ -246,7 +247,7 @@ for i in range(0, len(all_cards)):
           measure_hist["mean"].append(_mean)
 
 if not do_hist:
-  print "mean\t{0:.2f}%".format(tot_score/tot_n)
+  print "summary\n\tmean      \t{0:.2f}%".format(tot_score/tot_n)
 else:
   for (k,v) in measure_hist.items():
       print "-- {0} histogram --".format(k)
