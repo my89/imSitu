@@ -9,4 +9,5 @@ Contains templates for realizing situations. Words preceeding a role name but af
 ## realized_parts.tabs.tgz
 
 Contains realized phrases for every subset of parts of realized frames occuring the imSitu training set.
+
 Format: frequency \t verb \t realized_phrase \t subpart
