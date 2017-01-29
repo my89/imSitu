@@ -1,0 +1,654 @@
+pressing	AGENT presses ITEM at PLACE
+stapling	AGENT staples ITEM onto SURFACE using TOOL at PLACE
+installing	AGENT installs COMPONENT into DESTINATION using TOOL at PLACE
+blessing	AGENT blesses BLESSED at PLACE
+demolished	AGENT demolished UNDERGOER with TOOL at PLACE
+snowing	snows at PLACE
+destroying	AGENT destroyed DESTROYEDITEM with TOOL at PLACE
+rafting	AGENT rafts at PLACE
+begging	AGENT begging GIVER for ITEM at PLACE
+poking	AGENT poked OBJECT in OBJECTPART using TOOL at PLACE
+mixing	AGENT mixes ITEM in CONTAINER using TOOL at PLACE
+assembling	AGENT assembles GOALITEM with COMPONENT using TOOL at PLACE
+crouching	AGENT crouches at PLACE
+attaching	AGENT attaches ITEM to DESTINATION with GLUE using TOOL at PLACE
+flaming	AGENT flames at PLACE
+wrinkling	AGENT wrinkles AGENTPART at PLACE
+flipping	AGENT flips FLIPPED  with TOOL at PLACE
+constructing	AGENT constructs CREATEDITEM with TOOL from COMPONENTS at PLACE
+recovering	AGENT recovers from AILMENT at PLACE
+dissecting	AGENT dissecting ITEM using TOOL at PLACE
+carrying	AGENT carries ITEM on AGENTPART at PLACE
+wating	AGENT waits at PLACE
+drying	AGENT dries ITEM using TOOL at PLACE
+voting	AGENT votes for VOTEFOR at PLACE
+rehabiliitate	AGENT rehabilitates ITEM at PLACE
+drawing	AGENT draws REFERENCE using TOOL at PLACE
+grieving	AGENT grieves at PLACE
+caressing	AGENT caresses RECIPIENT on the RECIPIENTPART at PLACE
+creasing	AGENT creased ITEM at PLACE
+fighting	AGENT fights with COAGENT at PLACE
+lapping	AGENT laps FOOD from CONTAINER at PLACE
+struggling	AGENT struggles with SECOND-PARTICIPANT using TOOL at PLACE
+gardening	AGENT gardens with TOOL at PLACE
+bugging	AGENT bugs VICTIM with TOOL at PLACE
+dipping	AGENT dips ITEM into SUBSTANCE at PLACE
+examining	AGENT examines ITEM using TOOL at PLACE
+snapping	AGENT snapped Agentpart at PLACE
+skiing	AGENT skis at PLACE
+sharpening	AGENT sharpens ITEM with TOOL at PLACE
+mingling	AGENT mingle with COAGENT at PLACE
+covering	AGENT covers ITEM with COVER at PLACE
+boiling	AGENT boils BOILED in CONTAINER over HEATSOURCE at PLACE
+elbowing	AGENT elbows VICTIM in VICTIMPART at PLACE
+jumping	AGENT jumps from SOURCE over OBSTACLE into DESTINATION at PLACE
+detaining	AGENT detains VICTIM at PLACE
+photocoying	AGENT photocopies PHOTOCOPIEDITEM using TOOL at PLACE
+fueling	AGENT fuels RECIPIENT with TOOL at PLACE
+hunting	AGENT hunts HUNTED at PLACE
+tweezing	AGENT tweezes COAGENT  from PART with TOOL at PLACE
+paying	AGENT pays SELLER for GOOD at PLACE
+cheering	AGENT cheers at PLACE
+rinsing	AGENT rinsing OBJECT using TOOL at PLACE
+racing	AGENT races against COMPETITOR at PLACE
+sking	AGENT skis at PLACE
+piloting	AGENT pilots VEHICLE from START to END at PLACE
+frying	AGENT fries FOOD in CONTAINER at PLACE
+lulling	AGENT lulls LULLED with TOOL at PLACE
+dismounting	AGENT dismounts VEHICLE at PLACE
+limping	AGENT limps at PLACE
+browsing	AGENT browses for GOALITEM at PLACE
+cresting	AGENT crests at PLACE
+disliking	DISLIKER disliked DISLIKED because of REASON at PLACE 
+preying	AGENT preys ITEM using TOOL at PLACE
+giggling	AGENT giggled at TARGET at PLACE
+standing	AGENT standing at PLACE
+reading	AGENT reads ITEM at PLACE
+packing	AGENT pack ITEM into CONTAINER at PLACE
+entraining	AGENT entrains VEHICLE at PLACE
+urinating	AGENT urinates onto TARGET at PLACE
+locking	AGENT locks ITEM with TOOL at PLACE
+buttoning	AGENT buttons ITEM at PLACE
+sliding	AGENT slides SLIDER  on SURFACE to DESTINATION at PLACE
+neglecting	AGENT neglects VICTIM at PLACE
+ejecting	AGENT ejects ITEM from SOURCE toward DESTINATION at PLACE
+chopping	AGENT choppes ITEM using TOOL at PLACE
+chiseling	AGENT chisels ITEM at PLACE
+whistling	AGENT whistles with TOOL at PLACE
+interviewing	AGENT interviews INTERVIEWEE at PLACE
+submerging	AGENT submerges OBJECT in SUBSTANCE at PLACE
+apprehending	AGENT apprehended VICTIM at PLACE
+emerging	AGENT emerges from SOURCE to DESTINATION at PLACE
+buying	AGENT buys GOODS with PAYMENT from SELLER at PLACE
+shooting	AGENT shoots PROJECTILE from FIREARM at TARGET at PLACE
+teaching	TEACHER teaches STUDENT at PLACE
+tasting	AGENT tastes ITEM with TOOL at PLACE
+cleaning	AGENT cleaning SOURCE with TOOL at PLACE
+booing	AGENT booed TARGET at PLACE
+kicking	AGENT kicks VICTIM in VICTIMPART at PLACE
+rehabilitating	AGENT rehabilitates ITEM at PLACE
+retrieving	AGENT retrieves OBJECT from START at PLACE
+queuing	AGENT queueing at PLACE
+nipping	AGENT nips ITEM at PLACE
+painting	AGENT paints ITEM with TOOL at PLACE
+diving	AGENT dove at PLACE
+taping	AGENT tapes ITEM to DESTINATION at PLACE
+thrusting	AGENT thrusts ITEM into TARGET at PLACE
+pestering	AGENT pestering EXPERIENCER at PLACE
+joining	AGENT joins ITEM1 and ITEM2 with CONNECTOR at PLACE
+drooling	AGENT drools on END at PLACE
+leading	AGENT leading FOLLOWER at PLACE
+shelling	AGENT shells OBJECT at PLACE
+bathing	AGENT bathes COAGENT using a TOOL in a SUBSTANCE at PLACE
+dropping	AGENT dropped ITEM from START to END at PLACE
+lugging	AGENT lugging ITEM at PLACE
+shopping	AGENT shops for GOODS at PLACE
+lectuing	AGENT lectures AUDIENCE at PLACE
+amusing	AGENT amuses TARGET using AMUSEMENT at PLACE
+shivering	AGENT shivers at PLACE
+meeting	PARTY1 meets PARTY2 at PLACE
+flossing	AGENT flosses COAGENT  at PLACE
+rubbing	AGENT rubs ITEM with AGENTPART at PLACE
+coaching	AGENT coaches STUDENT at SKILL at PLACE
+tickling	AGENT tickled TICKLED with OBJECT at PLACE
+tackling	AGENT tackles VICTIM at PLACE
+nagging	AGENT nags NAGGEDPERSON at PLACE
+dabbing	AGENT dabs SUBSTANCE onto SURFACE with TOOL at PLACE
+dialing	AGENT dials on ITEM at PLACE
+hanging	AGENT hangs ITEM from SCAFFOLD at PLACE
+writing	AGENT writes on TARGET using TOOL at PLACE
+unlocking	AGENT unlocks CONTAINER opening LOCK using TOOL at PLACE
+shrugging	AGENT shrugs at ADDRESSEE at PLACE
+tuning	AGENT tunes OBJECT with TOOL at PLACE
+immersing	AGENT immerses ITEM  in LIQUID at PLACE
+embroidering	AGENT embroidering ITEM using TOOL at PLACE
+deepfrying	AGENT deepfried FOOD using TOOL at PLACE
+tugging	AGENT tugs ITEM at PLACE
+turning	AGENT turning TURNEDITEM at PLACE
+communicating	AGENT communicates to ADRESSEE at PLACE
+serving	AGENT serves ITEM to SERVED at PLACE
+landing	AGENT lands on DESTINATION at PLACE
+exchanging	AGENT exchanging OLDITEM with NEWITEM using TOOL at PLACE
+farming	FARMER farms ITEM from GROUND using TOOL at PLACE
+piling	AGENT piles ITEM onto DESTINATION at PLACE
+patting	AGENT pats ITEM using TOOL at PLACE
+evacuating	AGENT evacuating PLACE because of DANGER
+piggybacking	RIDER piggybacks on CARRIER at PLACE
+searing	AGENT sears ITEM over HEATSOURCE in CONTAINER using TOOL at PLACE
+sewing	AGENT sews ITEM with TOOL at PLACE
+practicing	AGENT practices SKILL using TOOL at PLACE
+kneeing	AGENT knees VICTIM in VICTIMPART at PLACE
+sneezing	AGENT sneezed at PLACE
+whisking	AGENT whisks ITEM in CONTAINER at PLACE
+spoiling	AGENT spoils at PLACE
+steering	AGENT steers VEHICLE with TOOL at PLACE
+blocking	BLOCKER blocked BLOCKED with TOOL at PLACE
+pasting	AGENT pastes with CONNECTOR ITEM to OBJECT at PLACE
+walking	AGENT walks at PLACE
+milling	AGENT mills ITEM with TOOL at PLACE
+socializing	AGENT socializes with COAGENT at PLACE
+planting	AGENT plants PLANTED with COPARTICIPANT using TOOL at PLACE
+flexing	AGENT flexes AGENTPART at ADDRESSEE at PLACE
+biking	AGENT bikes at PLACE
+anchoring	AGENT anchors ITEM to ANCHOR with CONNECTOR at PLACE
+replacing	AGENT replaces OLD with NEW at PLACE
+shearing	AGENT shears ITEM from SOURCE at PLACE
+igniting	AGENT ignites ITEM with TOOL at PLACE
+dousing	AGENT dousing UNDERGOER with LIQUID at PLACE
+pinning	AGENT pinning PINNED onto DESTINATION at PLACE
+fetching	AGENT fetches ITEM from SOURCE to DESTINATION at PLACE
+arriving	AGENT arrives at PLACE
+welding	AGENT welds ITEM to SURFACE at PLACE using TOOL
+curtsying	AGENT curtsies at PLACE
+demolishing	AGENT demolished UNDERGOER with TOOL at PLACE
+sniffing	AGENT sniffs ITEM at PLACE
+crinkling	AGENT crinkles ITEM at PLACE
+stuffing	AGENT stuffs ITEM in DESTINATION at PLACE
+studying	AGENT studying at PLACE
+scrubbing	AGENT scrubs ITEM with TOOL at PLACE
+breaking	AGENT breaks ITEM against AGAINST using TOOL at PLACE
+colliding	AGENT collides with ITEM at PLACE
+pedaling	AGENT pedals VEHICLE at PLACE
+sitting	AGENT sits on CONTACT at PLACE
+swimming	AGENT swims at PLACE
+spraypainting	AGENT spraypaints DEPICTEDTHING on SURFACE using TOOL at PLACE
+mixing	AGENT mixes ITEM in CONTAINER using TOOL at PLACE
+putting	AGENT puts ITEM into DESTINATION at PLACE
+climbing	AGENT climbs OBSTACLE with TOOL at PLACE
+measuring	AGENT measures OBJECT QUANTITY using TOOL at PLACE
+instructing	AGENT instructs STUDENT at PLACE
+gnawing	AGENT gnaws ITEM at PLACE
+draining	AGENT drains ITEM from START to END at PLACE
+wilting	AGENT wilts at PLACE
+lacing	AGENT laces ITEM at PLACE
+shoveling	AGENT shovels ITEM from SOURCE at PLACE
+operating	AGENT operates ITEM with TOOL at PLACE
+camouflaging	AGENT camouflaging into HIDINGITEM at PLACE
+crowning	AGENT crowns CROWNEDENTITY  with CROWN at PLACE
+clawing	AGENT clawing VICTIM at PLACE
+shattering	AGENT shatters ITEM with TOOL against AGAINST at PLACE
+disputing	AGENT disputes with COAGENT at PLACE
+sculpting	AGENT sculpts some MATERIAL into CREATEDITEM at PLACE
+flushing	AGENT flushed ITEM from SOURCE at PLACE
+cramming	AGENT crammed THEME into CONTAINER at PLACE
+videotaping	AGENT videotapes DEPICTED at PLACE
+admiring	AGENT admiring ADMIRED at PLACE
+scrubing	AGENT scrubs ITEM with TOOL at PLACE
+waxing	AGENT waxes COAGENT  BODYPART at PLACE
+drumming	AGENT drums on ITEM with TOOL at PLACE
+bowing	AGENT bows at PLACE
+unplugging	AGENT unplugs UNPLUGGED using TOOL at PLACE
+crashing	AGENT crashes ITEM  into AGAINST at PLACE
+filming	AGENT films PERFORMER using TOOL at PLACE
+arresting	AGENT arrested SUSPECT at PLACE
+tattooing	AGENT tattooed TARGET with TOOL at PLACE
+providing	AGENT provides RECIPIENT with ITEM from SOURCE at PLACE
+moisturizing	AGENT moisturizes MOISTURIZED with TOOL at PLACE
+frisking	AGENT frisks VICTIM at PLACE
+bubbling	AGENT bubbles at PLACE
+scattering	AGENT scatters ITEMTYPE from SOURCE onto DESTINATION using TOOL at PLACE
+hitting	AGENT hits VICTIM in VICTIMPART  with TOOL at PLACE
+conversing	AGENT converses with PARTICIPANT at PLACE
+scolding	AGENT scolds VICTIM at PLACE
+circling	AGENT circles CENTER at PLACE
+heaving	AGENT heaves HEAVEDITEM using TOOL at PLACE
+skidding	AGENT skidding at PLACE
+floating	AGENT floating in MEDIUM using TOOL at PLACE
+carting	AGENT cartes ITEM in TOOL at PLACE
+wrapping	AGENT wrapping WRAPPEDITEM with WRAPPINGITEM at PLACE
+dueling	AGENT duels with COAGENT at PLACE
+squirting	AGENT squirts SUBSTANCE to DESTINATION from SOURCE at PLACE
+cooking	AGENT cooks FOOD in CONTAINER over HEATSOURCE using TOOL at PLACE
+calming	AGENT calming EXPERIENCER  at PLACE
+lecturing	AGENT lectures AUDIENCE at PLACE
+interrogating	AGENT interrogated ADDRESSEE using TOOL at PLACE
+wringing	AGENT wrings ITEM at PLACE
+stripping	AGENT stripping REMOVEDITEM from SOURCE using TOOL at PLACE
+auctioning	SELLER auctions GOODS at PLACE
+gathering	GATHERERS gathered at PLACE
+singing	AGENT sings at PLACE
+filling	AGENT fills DESTINATION with ITEM from SOURCE at PLACE
+overflowing	AGENT overflowing from SOURCE at PLACE
+quieting	AGENT quiets COAGENT with TOOL at PLACE
+releasing	AGENT releases RELEASEDITEM from PLACE
+scuffling	AGENT scuffles with COAGENT at PLACE
+unzipping	AGENT unzips OBJECT using FASTENER at PLACE
+yawning	AGENT yawns at PLACE
+protecting	AGENT  protects ITEM from DANGER using TOOL at PLACE
+burying	AGENT buries ITEM into DESTINATION using TOOL at PLACE
+joining	AGENT joins ITEM1 and ITEM2 with CONNECTOR at PLACE
+quarreling	AGENT quarrels with COAGENT at PLACE
+signing	AGENT signs SIGNEDITEM with TOOL at PLACE
+plunging	AGENT plunges PLUNGED  into DESTINATION at PLACE
+adjusting	AGENT adjusts ITEM FEATURE using TOOL at PLACE
+aiding	AGENT aids COAGENT with TOOL at PLACE
+baking	AGENT bakes FOOD in FOODCONTAINER on HEATSOURCE at PLACE
+spinning	AGENT spins MATERIAL with TOOL at PLACE
+catching	AGENT catches CAUGHTITEM with TOOL at PLACE
+shelving	AGENT shelves ITEM on DESTINATION at PLACE
+chucking	AGENT chucks ITEM toward DESTINATION at PLACE
+hitching	AGENT hitches ITEM to COITEM with TOOL at PLACE
+spilling	AGENT spills SUBSTANCE from SOURCE onto DESTINATION at PLACE
+disciplining	AGENT disciplines VICTIM with TOOL at PLACE
+braiding	AGENT braids ITEM at PLACE
+skating	AGENT skates on VEHICLE at PLACE
+dispersing	AGENT disperses ITEM from SOURCE to DESTINATION at PLACE
+smearing	AGENT smears ITEM on SURFACE with TOOL at PLACE
+scuplting	AGENT sculpts some MATERIAL into CREATEDITEM at PLACE
+ballooning	AGENT balloons at PLACE
+frolicing	AGENT frolics at PLACE
+hitchhiking	AGENT hitchhikes at PLACE
+ailing	VICTIM ailing with CAUSE in VICTIMPART at PLACE
+parachuting	AGENT parachuting using PARACHUTE to DESTINATION at PLACE
+leaking	SUBSTANCE leaks from SOURCE onto DESTINATION at PLACE
+pricking	AGENT pricks PRICKED with TOOL at PLACE
+grinding	AGENT grinds ITEM with TOOL against SURFACE at PLACE
+pitching	AGENT pitches PITCHED using TOOL to pitch at PLACE
+stirring	AGENT stirs ITEM in CONTAINER using TOOL at PLACE
+corraling	AGENT corrals ITEM into DESTINATION using TOOL at PLACE
+branding	AGENT brands BRANDED with TOOL at PLACE
+mining	AGENT mines RESOURCE with TOOL at PLACE
+striking	AGENT strikes AGENTPART of COAGENT using TOOL at PLACE
+evaporating	AGENT evaporates LIQUID using TOOL at PLACE
+erupting	AGENT erupts with SUBSTANCE at PLACE
+autographing	AGENT autographs ITEM for RECEIVER at PLACE
+flinging	AGENT flings ITEM toward GOAL using TOOL at PLACE
+shreding	AGENT shreds ITEM using TOOL at PLACE
+wrestling	AGENT wrestles with COAGENT at PLACE
+spying	AGENT spies on TARGET with TOOL at PLACE
+fishing	AGENT extracts fish from SOURCE using TOOL at PLACE
+lathering	AGENT lathers SUBSTANCE into DESTINATION at PLACE
+tilling	AGENT tills soil with TOOL at PLACE
+towing	AGENT towing ITEM onto DESTINATION using TOOL at PLACE
+fanning	AGENT fans OBJECT with TOOL at PLACE
+stamping	AGENT stamps on ITEM at PLACE
+fortifying	AGENT fortifying ITEM at PLACE
+spreading	AGENT spreads SUBSTANCE onto SURFACE using TOOL at PLACE
+slouching	AGENT slouches on CONTACT at PLACE
+emptying	AGENT empties ITEM from CONTAINER into DESTINATION using TOOL at PLACE
+heaping	AGENT heaps ITEMS at PLACE
+spearing	AGENT spears VICTIM at PLACE
+rearing	AGENT rearing at PLACE
+gutting	AGENT guts ITEM with TOOL at PLACE
+mowing	AGENT mows ITEM with TOOL at PLACE
+storming	storming at PLACE
+licking	AGENT licks ITEM at PLACE
+flapping	AGENT flapped its BODYPART at PLACE
+propelling	AGENT propels ITEM to DESTINATION at PLACE
+branching	BRANCHER branches at PLACE
+gifting	AGENT gifts PRESENT to RECIPIENT at PLACE
+juggling	AGENT juggles ITEMS at PLACE
+following	AGENT follows FOLLOWER at PLACE
+crushing	AGENT crushed CRUSHEDITEM with TOOL at PLACE
+stacking	AGENT stacks TOP onto BOTTOM at PLACE
+betting	AGENT bets at PLACE
+compacting	AGENT compacts ITEM with TOOL at PLACE
+junking	AGENT junks GARBAGE from SOURCE into DESTINATION at PLACE
+officiating	AGENT officiates EVENT at PLACE
+buttering	AGENT butters ITEM using TOOL at PLACE
+decomposing	DECOMPOSER decomposes at PLACE
+hunching	AGENT hunches over SURFACE at PLACE
+feeding	AGENT feeds FOOD from SOURCE to EATER at PLACE
+bulldozing	AGENT bulldozes OBJECT at PLACE
+soaring	AGENT soares at PLACE
+giving	AGENT gives ITEM to RECIPIENT at PLACE
+waddling	AGENT waddles using AGENTPART at PLACE
+drinking	AGENT drinks LIQUID from CONTAINER at PLACE
+ascending	AGENT ascends at PLACE
+trapping	AGENT traps VICTIM with TOOL at PLACE
+coloring	AGENT colors ITEM with TOOL at PLACE
+peeling	AGENT peels ITEM with TOOL at PLACE
+performing	AGENT performing EVENT on STAGE using TOOL at PLACE
+cracking	AGENT cracks ITEM with TOOL at PLACE
+recording	AGENT records PHENOMENON at PLACE
+ducking	AGENT ducks to avoid BLOW at PLACE
+vandalizing	AGENT vandalizes TARGET using TOOL at PLACE
+sparking	AGENT sparks ITEM using TOOL at PLACE
+repairing	AGENT repairs ITEM PROBLEM using TOOL at PLACE
+hugging	AGENT hugs HUGGED with AGENTPART at PLACE
+shaking	AGENT shakes ITEM using TOOL at PLACE
+boarding	AGENT boards VEHICLE at PLACE
+squashing	AGENT squashes ITEM with TOOL against SURFACE at PLACE
+fixing	AGENT fixes OBJECT OBJECTPART with TOOL at PLACE
+celebrating	AGENT celebrates OCCASION  at PLACE
+squating	AGENT squats on GROUND at PLACE
+misbehaving	AGENT misbehaves at PLACE
+brushing	AGENT brushes TARGET with TOOL using SUBSTANCE at PLACE
+panhandling	AGENT panhandles TARGET at PLACE
+descending	AGENT descending from SOURCE using TOOL at PLACE
+counting	AGENT counts ITEMTYPE at PLACE
+weeping	AGENT weeps at PLACE
+offering	AGENT offers ITEM to BENEFICIARY at PLACE
+dodging	AGENT dodging BADENTITY at PLACE
+discussing	AGENTS discuss at PLACE
+discharging	AGENT discharges WEAPON ejecting PROJECTILE at PLACE
+subduing	AGENT subdues TARGET at PLACE
+shaving	AGENT shaves COAGENT  BODYPART using TOOL with SUBSTANCE at PLACE
+shutting	AGENT shuts ITEM with AGENTPART at PLACE
+leaving	AGENT leaves SOURCE at PLACE
+curling	AGENT curling TARGET with TOOL at PLACE
+crawling	AGENT crawls at PLACE
+watering	AGENT watering RECIPIENT with TOOL at PLACE
+molding	AGENT molds SUBSTANCE into GOALITEM at PLACE
+dancing	AGENT dances at PLACE
+waving	AGENT waves AGENTPART at PLACE
+urolling	AGENT unrolls ITEM at PLACE
+brewing	AGENT brews TARGET at PLACE
+fleeing	AGENT flees from PURSUER at PLACE
+wiping	AGENT wipes SUBSTANCE from SOURCE with TOOL at PLACE
+hurling	AGENT hurls OBJECT from START to END at PLACE
+grilling	AGENT grills FOOD at PLACE
+perspiring	AGENT perspires at PLACE
+inscribing	AGENT inscribes ITEM using TOOL at PLACE
+emplaning	AGENT emplanes at PLACE
+plummeting	AGENT plummeting from START toward DESTINATION at PLACE
+unveiling	AGENT unveils OBJECT at PLACE
+running	AGENT runs at PLACE
+punching	AGENT punching VICTIM BODYPART at PLACE
+jogging	AGENT jogs at PLACE
+erasing	AGENT erases ERASED from SOURCE at PLACE
+marching	AGENT marches at PLACE
+typing	AGENT typing with TOOL at PLACE
+working	AGENT works on FOCUS at PLACE
+vaulting	AGENT vaults from START over OBSTACLE to END using TOOL at PLACE
+rocking	AGENT rocks ROCKED in CONTAINER at PLACE
+jamming	AGENT jams ITEM into CONTAINER at PLACE
+rowing	AGENT rows VEHICLE at PLACE
+combing	AGENT combs TARGET with TOOL at PLACE
+inspecting	AGENT inspects INSPECTEDOBJECT using TOOL at PLACE
+smashing	AGENT smashes SMASHED with TOOL against AGAINST at PLACE
+swarming	AGENTTYPE swarms at PLACE
+mending	AGENT mends ITEM with TOOL at PLACE
+combining	AGENT combines ITEM1 and ITEM2 into WHOLE at PLACE
+embracing	AGENT embraces COAGENT at PLACE
+spanking	AGENT spanks VICTIM with TOOL at PLACE
+shouting	AGENT shouts at ADDRESSEE at PLACE
+decorating	AGENT decorates DECORATED with ITEM at PLACE
+dusting	AGENT dusts SOURCE using TOOL at PLACE
+attracting	ATTRACTOR attracts ATTRACTED at PLACE
+intermingling	AGENTS intermingle at PLACE
+soaking	AGENT soaks ITEM in SUBSTANCE in CONTAINER at PLACE
+yanking	AGENT yanks YANKED by YANKEDPART at PLACE
+launching	AGENT launches ITEM from SOURCE toward DESTINATION at PLACE
+picking	AGENT picks CROP from SOURCE at PLACE
+eating	AGENT eat FOOD from CONTAINER using TOOL at PLACE
+raking	AGENT rakes ITEM from SOURCE into DESTINATION at PLACE
+falling	AGENT falls from SOURCE to GOAL at PLACE
+laughing	AGENT laughes at PLACE
+restraining	AGENT restrained RESTRAINED at PLACE
+lifting	AGENT lifts ITEM from START to END at PLACE
+nudging	AGENT nudged NUDGEDITEM at PLACE
+tilting	AGENT tilts ITEM with their AGENTPART at PLACE
+sticking	AGENT sticks ITEM to ENDITEM with CONNECTOR at PLACE
+wheeling	AGENT wheels ITEM on CARRIER at PLACE
+distributing	AGENT distributes DISTRIBUTED to RECIPIENTS using TOOL at PLACE
+sprouting	SPROUTER sprouts at PLACE
+unloading	AGENT unloads ITEM from SOURCE using TOOL at PLACE
+squishing	AGENT squishes ITEM with TOOL against SURFACE at PLACE
+throwing	AGENT throws ITEM towards DESTINATION at PLACE
+butting	AGENT butts TARGET at PLACE
+sucking	AGENT sucks on ITEM at PLACE
+flattening	AGENT flattens ITEM with TOOL at PLACE
+sketching	AGENT sketches IMAGE on MATERIAL with TOOL  at PLACE
+slicing	AGENT slices SLICEDITEM using TOOL at PLACE
+draping	AGENT drapes ITEM over DESTINATION at PLACE
+glowing	AGENT glows at PLACE
+taxiing	AGENT taxies on GROUND at PLACE
+pawing	AGENT pawed PAWEDITEM using AGENTPART at PLACE
+docking	AGENT docks VEHICLE with CONNECTOR at PLACE
+kissing	AGENT kissed COAGENT COAGENTPART with AGENTPART at PLACE
+gawking	AGENT gawks in DIRECTION at GAWKEDAT at PLACE
+checking	AGENT checks PATIENT ASPECT with TOOL at PLACE
+wading	AGENT wades through SUBSTANCE at PLACE
+swirling	AGENT swirls ITEM using TOOL at PLACE
+leaning	AGENT leaning ITEM against AGAINST at PLACE
+potting	AGENT pots ITEM in CONTAINER at PLACE
+saluting	AGENT saluting TARGET at PLACE
+missing	AGENT misses MISSEDTARGET with TOOL at PLACE
+resting	AGENT rests ITEM on GOAL at PLACE
+weeding	AGENT weeds with TOOL at PLACE
+tying	AGENT tying ITEM to DESTINATION using CONNECTOR at PLACE
+flicking	AGENT flicks OBJECT in OBJECTPART with AGENTPART at PLACE
+sleeping	AGENT sleeps at PLACE
+nailing	AGENT nails ITEM1 to ITEM2 using TOOL at PLACE
+frowning	AGENT frowns at PLACE
+marrying	AGENT marries COAGENT at PLACE
+grinning	AGENT grinned at PLACE
+clenching	AGENT clenched ITEM with AGENTPART at PLACE
+crafting	AGENT crafts CREATED with INSTRUMENT at PLACE
+helping	AGENT helped ENTITYHELPED with TOOL at PLACE
+rotating	AGENT rotates ITEM at PLACE
+commuting	TRAVELER commutes in VEHICLE at PLACE
+exterminating	AGENT exterminating PLACE with INSTRUMENT
+slithering	AGENT slithers at PLACE
+pumping	AGENT pumps SUBSTANCE from SOURCE to DESTINATION using TOOL at PLACE
+staring	AGENT stares at ITEM at PLACE
+unpacking	AGENT unpacks ITEM from CONTAINER at PLACE
+stinging	AGENT stings VICTIM on VICTIMPART at PLACE
+stitching	AGENT stitches using TOOL and FASTENER at PLACE
+competing	AGENT competing in COMPETITION at PLACE
+scavenging	AGENT scavenges for ITEM at PLACE
+distracting	AGENT distracts VICTIM at PLACE
+crying	AGENT cries at PLACE
+kneading	AGENT kneads ITEM at PLACE
+clinging	AGENT cilngs to CLUNGTO at PLACE
+making	AGENT making GOALITEM with COMPONENT using TOOL at PLACE
+deflecting	AGENT deflected DEFLECTEDITEM to DESTINATION at PLACE
+arching	AGENT arches BODYPART at PLACE
+leaping	AGENT leaps from SOURCE over OBSTACLE to DESTINATION at PLACE
+knocking	AGENT knocks on ITEM at PLACE
+pulling	AGENT pulls ITEM with TOOL at PLACE
+harvesting	AGENT harvest HARVESTEDITEM using TOOL from GROUND at PLACE
+strapping	AGENT straps STRAPPED into DESTINATION using STRAP at PLACE
+clapping	AGENT claps their AGENTPART at PLACE
+biting	AGENT biting ITEM at PLACE
+slapping	AGENT slaps VICTIM  in VICTIMPART with TOOL at PLACE
+miming	AGENT mimes IMITATION at PLACE
+punting	AGENT punts ITEM at PLACE
+stumbling	AGENT stumbles onto DESTINATION at PLACE
+squeezing	AGENT squeezes ITEM with TOOL at PLACE
+driving	AGENT driving ITEM at PLACE
+asking	AGENT asks ADDRESSEE at PLACE
+placing	AGENT placed PLACEDITEM in DESTINATION along ALREADYPLACEDITEM at PLACE
+bandaging	AGENT bandages VICTIM at PLACE
+barbecuing	AGENT barbecues FOOD at PLACE
+slobbering	AGENT slobbers onto DESTINATION at PLACE
+bouncing	AGENT bounces ITEM against SURFACE at PLACE
+twirling	AGENT twirls COAGENT at PLACE
+dragging	AGENT drags ITEM with TOOL on CONTACT at PLACE
+hoeing	AGENT hoes GROUND at PLACE
+chewing	AGENT chews ITEM at PLACE
+boating	BOATERS boat on VEHICLE at PLACE
+saying	AGENT speaks to ADRESSEE at PLACE
+hoisting	AGENT hoists ITEM up from SOURCE using TOOL at PLACE
+vacuuming	AGENT vacuumes SURFACE using TOOL at PLACE
+compressing	AGENT compresses ITEM using TOOL at PLACE
+hauling	CARRIER hauls ITEM with TOOL at PLACE
+training	AGENT training STUDENT at PLACE
+hiking	AGENT hikes at PLACE
+reassuring	AGENT reassures REASSURED at PLACE
+confronting	AGENT confronts CONFRONTED at PLACE
+riveting	AGENT rivets ITEM onto DESTINATION using TOOL at PLACE
+dripping	AGENT drips FLUID from SOURCE to DESTINATION at PLACE
+burning	AGENT burning TARGET at PLACE
+stiring	AGENT stirs ITEM in CONTAINER using TOOL at PLACE
+inserting	AGENT inserts OBJECT into CONTAINER at PLACE
+debussing	AGENT debuses at PLACE
+snuggling	AGENT snuggles with COAGENT at PLACE
+sparring	AGENT spars with COAGENT at PLACE
+manicuring	AGENT manicures ITEM using TOOL at PLACE
+flagging	AGENT flags OBJECT with TOOL at PLACE
+exercising	AGENT exercises AGENTPART at PLACE
+pinching	AGENT pinches OBJECT in OBJECTPART at PLACE
+fastening	AGENT fastens ITEM into DESTINATION with CONNECTOR using TOOL at PLACE
+bussing	AGENT busses at PLACE
+ramming	AGENT rams VICTIM with RAMMINGITEM at PLACE
+camping	AGENT camps in SHELTER at PLACE
+injecting	AGENT injects SUBSTANCE from SOURCE into DESTINATION at PLACE
+twisting	AGENT twisting AGENTPART at PLACE
+wagging	AGENT wags AGENTPART at ADDRESSEE at PLACE
+dampening	AGENT dampens ITEMs with LIQUID at PLACE
+hailing	hails at PLACE
+scraping	AGENT scrapes SCRAPEDITEM with TOOL at PLACE
+grabbing	AGENT grabs ENTITY at PLACE
+embusing	AGENT embusses at PLACE
+telephoning	AGENT telephones at PLACE
+clearing	AGENT clears ITEM from SOURCE using TOOL at PLACE
+whipping	AGENT whips ITEM using TOOL at PLACE
+clipping	AGENT clipping ITEM from SOURCE with TOOL at PLACE
+gambling	AGENT gambles STAKE at PLACE
+speaking	AGENT speaks to COAGENT at PLACE
+pushing	AGENT pushes ITEM with AGENTPART at PLACE
+imitating	AGENT imitates MODEL at PLACE
+tucking	AGENT tucks TUCKED into DESTINATION at PLACE
+dyeing	AGENT dyes MATERIAL with DYE at PLACE
+mashing	AGENT mashes ITEM with TOOL at PLACE
+swinging	AGENT swings on CARRIER at PLACE
+pooing	AGENT poos onto DESTINATION at PLACE
+loading	AGENT loads DESTINATION with ITEM using TOOL at PLACE
+smelling	AGENT smells ITEM at PLACE
+prowling	AGENT prowling for TARGET at PLACE
+rotting	AGENT rots in CONTAINER at PLACE
+tipping	AGENT tips ITEM with its AGENTPART at PLACE
+squatting	AGENT squats on GROUND at PLACE
+applauding	AGENT applauds ADDRESSEE at PLACE
+congregating	INDIVIDUALS congregate at PLACE
+surfing	AGENT surfing PATH using TOOL at PLACE
+shushing	AGENT shushes TARGET at PLACE
+phoning	AGENT phones using TOOL at PLACE
+chasing	AGENT chases CHASEE at PLACE
+shedding	AGENT sheds OBJECT at PLACE
+scoring	AGENT scores at PLACE
+aiming	AGENT aims ITEM at TARGET at PLACE
+weighing	AGENT weighs MASS with TOOL at PLACE
+calling	AGENT calls using TOOL at PLACE
+sprinkling	AGENT sprinkles ITEM from SOURCE onto DESTINATION at PLACE
+puffing	AGENT puffed SUBSTANCE through DEVICE at PLACE
+educating	TEACHER educates STUDENT on SUBJECT at PLACE
+scrunching	AGENT scrunches their ITEM at ADDRESSEE at PLACE
+gasping	AGENT gasping at PLACE
+handcuffing	AGENT handcuffs VICTIM at PLACE
+guarding	AGENT guards ITEM with WEAPON at PLACE
+winking	AGENT winks at ADDRESSEE at PLACE
+waiting	AGENT waits at PLACE
+plowing	AGENT plowing with INSTRUMENT at PLACE
+extinguishing	AGENT extinguishes ITEM using TOOL at PLACE
+buckling	AGENT buckles ITEM  using FASTENER into CONTAINER at PLACE
+offloading	AGENT offloads ITEM from SOURCE using TOOL at PLACE
+confining	AGENT confines PRISONER to CONTAINER at PLACE
+guiding	AGENT guides GUIDED at PLACE
+delivering	AGENT delivers ITEM to RECEIVER using VEHICLE at PLACE
+applying	AGENT applying SUBSTANCE to DESTINATION using TOOL at PLACE
+pouncing	AGENT pounces onto DESTINATION at PLACE
+stampeding	AGENT stampede at PLACE
+spraying	AGENT sprays SUBSTANCE onto DESTINATION from SOURCE using TOOL at PLACE
+baptizing	AGENT baptizes BAPTIZED at PLACE
+uncapping	AGENT uncaps ITEM with TOOL at PLACE
+sweeping	AGENT sweeps SURFACE with BRUSH at PLACE
+drenching	AGENT drenching DRENCHEDITEM with LIQUID using TOOL at PLACE
+unrolling	AGENT unrolls ITEM at PLACE
+squiting	AGENT squirts SUBSTANCE at DESTINATION from SOURCE at PLACE
+radioing	AGENT radios using TOOL at PLACE
+blossoming	AGENT blossoms at PLACE
+preaching	AGENT preaches to ADDRESSEE at PLACE
+bothering	AGENT bothers VICTIM by doing ACTION at PLACE
+foraging	AGENT forages for ITEM at PLACE
+packaging	AGENT packages ITEM at PLACE
+attacking	AGENT attacks VICTIM using WEAPON at PLACE
+kneeling	AGENT kneels on CONTACT at PLACE
+building	AGENT builds GOALITEM from COMPONENTS using TOOL at PLACE
+inflating	AGENT inflates OBJECT using TOOL at PLACE
+dining	AGENT dined on FOOD at PLACE
+moistening	AGENT moistens ITEM with LIQUID at PLACE
+signaling	AGENT signals MESSAGE to RECIPIENT using TOOL at PLACE
+brawling	AGENT brawls at PLACE
+pouting	AGENT pouts at PLACE
+whirling	AGENT whirls at PLACE
+scooping	AGENT scooping ITEM from SOURCE using TOOL at PLACE
+ignoring	AGENT ignores BORINGTHING at PLACE
+encouraging	AGENT encourages RECIEVER at PLACE
+coughing	AGENT coughs at PLACE
+cheerleading	AGENT cheerleads for SUPPORTED at PLACE
+gluing	AGENT glues ITEM to GOAL with CONNECTOR at PLACE
+raining	rains at PLACE
+tearing	AGENT tears ITEM with TOOL at PLACE
+fording	AGENT fords using TOOL at PLACE
+scavanging	AGENT scavenges for ITEM at PLACE
+squinting	AGENT squints at ITEM at PLACE
+smiling	AGENT smiles at PLACE
+closing	AGENT closes ITEM with AGENTPART at PLACE
+illustrating	AGENT illustrates ILLUSTRATION on DESTINATION using INSTRUMENT at PLACE
+trimming	AGENT trimming ITEMPART of ITEM with TOOL at PLACE
+wetting	AGENT wets OBJECT with LIQUID using TOOL at PLACE
+prying	AGENT pries ITEM from FROM using TOOL at PLACE
+opening	AGENT opens ITEM with TOOL at PLACE
+talking	AGENT talks to LISTENER in MANNER at PLACE
+scratching	AGENT scratches OBJECT using TOOL at PLACE
+photographing	AGENT photographes ITEM with TOOL at PLACE
+sprinting	AGENT sprints at PLACE
+tripping	AGENT trips over ITEM onto DESTINATION at PLACE
+recuperating	AGENT recuperates at PLACE
+pouring	AGENT pours SUBSTANCE from SOURCE to DESTINATION with TOOL at PLACE
+crumpling	AGENT crumples ITEM into RESULT at PLACE
+skipping	AGENT skips over OBSTACLE at PLACE
+trashing	AGENT trashes GARBAGE in DESTINATION at PLACE
+milking	AGENT milks SOURCE with TOOL into DESTINATION at PLACE
+wallpapering	AGENT wallpapers DESTINATION with TOOL at PLACE
+nuzzling	AGENT nuzzles ITEM at PLACE
+uncorking	AGENT uncorks CONTAINER using TOOL at PLACE
+microwaving	AGENT microwaves FOOD in CONTAINER at PLACE
+stretching	AGENT stretching ITEM at PLACE
+protesting	AGENT protests at PLACE
+arranging	AGENT arranges ITEM with TOOL at PLACE
+lighting	AGENT lights ITEM on fire using TOOL at PLACE
+riding	AGENT rides then VEHICLE at PLACE
+praying	AGENT prays at PLACE
+sowing	AGENT sows with TOOL at PLACE
+sealing	AGENT seals ITEM with SEALANT at PLACE
+slipping	AGENT slips onto DESTINATION at PLACE
+peeing	AGENT peeing in TARGET at PLACE
+disembarking	AGENT disembarks from VEHICLE at PLACE
+mopping	AGENT mopping SURFACE at PLACE
+washing	AGENT washes ITEM of DIRT using TOOL at PLACE
+massaging	AGENT massages COAGENTPART of COAGENT at PLACE
+shredding	AGENT shreds ITEM using TOOL at PLACE
+complaining	AGENT complains to LISTENER at PLACE
+displaying	AGENT displays ITEM to TARGET using TOOL at PLACE
+grabing	AGENT grabs ENTITY at PLACE
+nuggzling	AGENT nuzzles ITEM at PLACE
+carving	AGENT carved SUBSTANCE with TOOL at PLACE
+folding	AGENT folds CLOTH into SHAPE at PLACE
+swooping	AGENT swooping at PLACE
+affixing	AGENT affixes ITEM to TARGET using TOOL at PLACE
+grimacing	AGENT grimaced because of CAUSE at PLACE
+glaring	AGENT glares at PERCEIVER at PLACE
+puckering	AGENT puckers AGENTPART at PLACE
+stooping	AGENT stooping at PLACE
+splashing	AGENT splashes DESTINATION with SUBSTANCE using TOOL at PLACE
+mourning	MOURNER mourns at PLACE
+selling	SELLER sells ITEM to BUYER at PLACE
+pruning	AGENT prunes REMOVEDITEM from SOURCE using TOOL at PLACE
+spitting	AGENT spits ITEM on TARGET at PLACE
+parading	AGENT parades at PLACE
+stroking	AGENT stroking OBJECT on PART at PLACE
+pufffing	AGENT puffed SUBSTANCE through DEVICE at PLACE
