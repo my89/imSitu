@@ -25,8 +25,8 @@ class vgg_modified(nn.Module):
     self.vgg_features = self.vgg.features
     #self.classifier = nn.Sequential(
             #nn.Dropout(),
-    self.lin1 =         nn.Linear(512 * 7 * 7, 1024)
-    self.relu1 =        nn.ReLU(True)
+    self.lin1 = nn.Linear(512 * 7 * 7, 1024)
+    self.relu1 = nn.ReLU(True)
     self.dropout1 = nn.Dropout()
     self.lin2 =  nn.Linear(1024, 1024)
     self.relu2 = nn.ReLU(True)
@@ -181,9 +181,9 @@ class baseline_crf(nn.Module):
        self.split_vr[i].append(_id)
      total = 0 
      for (k,v) in self.split_vr.items():
-       print "{} {} {}".format(k, len(v), splits[k]*len(v))
+       #print "{} {} {}".format(k, len(v), splits[k]*len(v))
        total += splits[k]*len(v) 
-     print "total compute : {}".format(total) 
+     #print "total compute : {}".format(total) 
      
      #keep the splits sorted by vr id, to keep the model const w.r.t the encoding 
      for i in range(0,len(splits)):
@@ -234,11 +234,26 @@ class baseline_crf(nn.Module):
      self.linear_vrn = nn.ModuleList([ nn.Linear(self.rep_size, splits[i]*len(self.split_vr[i])) for i in range(0,len(splits))])
      self.total_vrn = 0
      for i in range(0, len(splits)): self.total_vrn += splits[i]*len(self.split_vr[i])
-     print "total encoding vrn : {0}, with padding in {1} groups : {2}".format(encoder.n_verbrolenoun(), self.total_vrn, len(splits))    
+     print "total encoding vrn : {0}, with padding in {1} groups : {2}".format(encoding.n_verbrolenoun(), self.total_vrn, len(splits))    
 
      #initilize everything
      initLinear(self.linear_v)
      for _l in self.linear_vrn: initLinear(_l)
+     self.mask_args()
+
+   def mask_args(self):
+     #go through the and set the weights to negative infinity for out of domain items     
+     neg_inf = float("-infinity")
+     for v in range(0, self.encoding.n_verbs()):
+       for (s, pos, r) in self.v_roles[v]:
+         linear = self.linear_vrn[s] 
+         #get the offset
+#         print self.splits
+         start = self.splits[s]*pos+len(self.encoding.vr_n_id[r])
+         end = self.splits[s]*(pos+1)
+         for k in range(start,end):
+           linear.bias.data[k] = neg_inf
+            
    #expects a list of vectors, BxD
    #returns the max index of every vector, max value of each vector and the log_sum_exp of the vector
    def log_sum_exp(self,vec):
@@ -399,9 +414,35 @@ def format_dict(d, s, p):
       rv+=p+str(k) + ":" + s.format(v*100)
     return rv
 
+def predict_human_readable (dataset_loader, simple_dataset,  model, outdir, top_k):
+  model.eval()  
+  print "predicting..." 
+  mx = len(dataset_loader) 
+  for i, (index, input, index) in enumerate(dataset_loader):
+      print "{}/{}".format(i,mx)
+      input_var = torch.autograd.Variable(input.cuda(), volatile = True)
+      (scores,predictions)  = model.forward_max(input_var)
+      #(s_sorted, idx) = torch.sort(scores, 1, True)
+      human = encoder.to_situation(predictions)
+      (b,p,d) = predictions.size()
+      for _b in range(0,b):
+        items = []
+        for _p in range(0, p):
+          items.append(human[_b][_p])
+          items[-1]["score"] = scores.data[_b][_p]
+        items = sorted(items, key = lambda x: -x["score"])[:top_k]
+        name = simple_dataset.images[index[_b][0]].split(".")[:-1]
+        name.append("predictions")
+        outfile = outdir + ".".join(name)
+        json.dump(items,open(outfile,"w"))
+
+
 def compute_features(dataset_loader, simple_dataset,  model, outdir):
   model.eval()  
-  for i, (input, index) in enumerate(dataset_loader):
+  print "computing features..." 
+  mx = len(dataset_loader) 
+  for i, (index, input, index) in enumerate(dataset_loader):
+      if i % 10 == 0: print "{}/{}".format(i,mx)
       input_var = torch.autograd.Variable(input.cuda(), volatile = True)
       features  = model.forward_features(input_var).cpu().data
       b = index.size()[0]
@@ -412,21 +453,20 @@ def compute_features(dataset_loader, simple_dataset,  model, outdir):
         torch.save(features[_b], outfile)
 
 def eval_model(dataset_loader, encoding, model):
-    
     model.eval()
-
+    print "evaluating model..."
     top1 = imSituTensorEvaluation(1, 3, encoding)
     top5 = imSituTensorEvaluation(5, 3, encoding)
-
-    #pmodel = torch.nn.DataParallel(model, device_ids=device_array)
-  
-    for i, (input, target) in enumerate(dataset_loader):
+ 
+    mx = len(dataset_loader) 
+    for i, (index, input, target) in enumerate(dataset_loader):
+      if i % 10 == 0: print "{}/{}".format(i,mx)
       input_var = torch.autograd.Variable(input.cuda(), volatile = True)
       target_var = torch.autograd.Variable(target.cuda(), volatile = True)
       (scores,predictions)  = model.forward_max(input_var)
       (s_sorted, idx) = torch.sort(scores, 1, True)
-      top1.add_point(target, predictions, idx)
-      top5.add_point(target, predictions, idx)
+      top1.add_point(target, predictions.data, idx)
+      top5.add_point(target, predictions.data, idx)
     
     return (top1, top5) 
 
@@ -443,7 +483,7 @@ def train_model(max_epoch, eval_frequency, train_loader, dev_loader, model, enco
     total_steps = 0
     avg_scores = []
     for k in range(0,max_epoch):  
-      for i, (input, target) in enumerate(train_loader):
+      for i, (index, input, target) in enumerate(train_loader):
         total_steps += 1
    
         t0 = time.time()
@@ -466,8 +506,8 @@ def train_model(max_epoch, eval_frequency, train_loader, dev_loader, model, enco
         loss_total += loss.data[0]
         #score situation
         t2 = time.time() 
-        top1.add_point(target, predictions, idx)
-        top5.add_point(target, predictions, idx)
+        top1.add_point(target, predictions.data, idx)
+        top5.add_point(target, predictions.data, idx)
      
         if timing: print "eval time = {}".format(time.time() - t2)
         if timing: print "batch time = {}".format(time.time() - t0)
@@ -523,7 +563,7 @@ if __name__ == "__main__":
   import argparse
   parser = argparse.ArgumentParser(description="imsitu Situation CRF. Training, evaluation, prediction and features.") 
   parser.add_argument("--command", choices = ["train", "eval", "predict", "features"], required = True)
-  parser.add_argument("--output_dir", required = True, help="location to put output, such as models, features, predictions")
+  parser.add_argument("--output_dir", help="location to put output, such as models, features, predictions")
   parser.add_argument("--image_dir", default="../resized_256", help="location of images to process")
   parser.add_argument("--dataset_dir", default="../", help="location of train.json, dev.json, ect.") 
   parser.add_argument("--weights_file", help="the model to start from")
@@ -534,12 +574,14 @@ if __name__ == "__main__":
   parser.add_argument("--weight_decay", default=5e-4, help="learning rate decay for ADAM", type=float)  
   parser.add_argument("--eval_frequency", default=500, help="evaluate on dev set every N training steps", type=int) 
   parser.add_argument("--training_epochs", default=20, help="total number of training epochs", type=int)
+  parser.add_argument("--eval_file", default="dev.json")
+  parser.add_argument("--top_k", default="10", type=int)
 
   args = parser.parse_args()
   if args.command == "train":
+    print "training"
     train_set = json.load(open(args.dataset_dir+"/train.json"))
     dev_set = json.load(open(args.dataset_dir+"/dev.json"))
-#    test_set = json.load(open(arg.dataset_dir+"/test.json"))
 
     if args.encoding_file == None: 
       encoder = imSituVerbRoleLocalNounEncoder(train_set)
@@ -552,7 +594,6 @@ if __name__ == "__main__":
     if args.weights_file is not None:
       model.load_state_dict(torch.load(args.weights_file))
     
-    #/home/my89/Desktop/crf/of500/
     dataset_train = imSituSituation(args.image_dir, train_set, encoder, model.train_preprocess())
     dataset_dev = imSituSituation(args.image_dir, dev_set, encoder, model.dev_preprocess())
 
@@ -563,14 +604,43 @@ if __name__ == "__main__":
     train_loader  = torch.utils.data.DataLoader(dataset_train, batch_size = batch_size, shuffle = True, num_workers = 3) 
     dev_loader  = torch.utils.data.DataLoader(dataset_dev, batch_size = batch_size, shuffle = True, num_workers = 3) 
 
-  #model.load_state_dict(torch.load("/scratch/crf/resnet_small/0.365294973545.model"))
     model.cuda()
 
     optimizer = optim.Adam(model.parameters(), lr = args.learning_rate, weight_decay = args.weight_decay)
     train_model(args.training_epochs, args.eval_frequency, train_loader, dev_loader, model, encoder, optimizer, args.output_dir)
   
   elif args.command == "eval":
-    pass
+    print "evaluating {}".format(args.dataset_dir)
+    eval_file = json.load(open(args.dataset_dir + "/" + args.eval_file))  
+      
+    if args.encoding_file is None: 
+      print "expecting encoder file to run evaluation"
+      exit()
+    else:
+      encoder = torch.load(args.encoding_file)
+    print "creating model..." 
+    model = baseline_crf(encoder, cnn_type = args.cnn_type)
+    
+    if args.weights_file is None:
+      print "expecting weight file to run features"
+      exit()
+    
+    print "loading model weights..."
+    model.load_state_dict(torch.load(args.weights_file))
+    model.cuda()
+    
+    dataset = imSituSituation(args.image_dir, eval_file, encoder, model.dev_preprocess())
+    loader  = torch.utils.data.DataLoader(dataset, batch_size = args.batch_size, shuffle = True, num_workers = 3) 
+
+    (top1, top5) = eval_model(loader, encoder, model)    
+    top1_a = top1.get_average_results()
+    top5_a = top5.get_average_results()
+
+    avg_score = top1_a["verb"] + top1_a["value"] + top1_a["value-all"] + top5_a["verb"] + top5_a["value"] + top5_a["value-all"] + top5_a["value*"] + top5_a["value-all*"]
+    avg_score /= 8
+
+    print "Average :{:.2f} {} {}".format(avg_score*100, format_dict(top1_a,"{:.2f}", "1-"), format_dict(top5_a, "{:.2f}", "5-"))
+       
   elif args.command == "features":
     if args.encoding_file is None: 
       print "expecting encoder file to run features"
@@ -594,3 +664,25 @@ if __name__ == "__main__":
 
     compute_features(image_loader, folder_dataset, model, args.output_dir)    
 
+  elif args.command == "predict":
+    if args.encoding_file is None: 
+      print "expecting encoder file to run features"
+      exit()
+    else:
+      encoder = torch.load(args.encoding_file)
+ 
+    print "creating model..." 
+    model = baseline_crf(encoder, cnn_type = args.cnn_type)
+    
+    if args.weights_file is None:
+      print "expecting weight file to run features"
+      exit()
+    
+    print "loading model weights..."
+    model.load_state_dict(torch.load(args.weights_file))
+    model.cuda()
+
+    folder_dataset = imSituSimpleImageFolder(args.image_dir, model.dev_preprocess())
+    image_loader  = torch.utils.data.DataLoader(folder_dataset, batch_size = args.batch_size, shuffle = False, num_workers = 3) 
+    
+    predict_human_readable(image_loader, folder_dataset, model, args.output_dir, args.top_k)

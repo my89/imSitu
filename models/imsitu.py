@@ -6,15 +6,16 @@ import os
 import os.path
 
 class imSituTensorEvaluation():
-  def __init__(self, topk, nref, encoding):
+  def __init__(self, topk, nref, image_group = {}):
     self.score_cards = {}
     self.topk = topk
     self.nref = nref
-  
+    self.image_group = image_group
+    
   def clear(self): 
     self.score_cards = {}
 
-  def add_point(self, encoded_reference, encoded_predictions, sorted_idx):
+  def add_point(self, encoded_reference, encoded_predictions, sorted_idx, image_names):
     #encoded predictions should be batch x verbs x values #assumes the are the same order as the references
     #encoded reference should be batch x 1+ references*roles,values (sorted) 
     (b,tv,l) = encoded_predictions.size()
@@ -22,15 +23,18 @@ class imSituTensorEvaluation():
       _pred = encoded_predictions[i]
       _ref = encoded_reference[i]
       _sorted_idx = sorted_idx[i]
+      _image = image_names[i]
 
       lr = _ref.size()[0]     
       max_r = (lr - 1)/2/self.nref
- 
+
       gt_v = _ref[0]
-      
-      if gt_v not in self.score_cards: 
+      if _image in self.image_group: sc_key = (gt_v, self.image_group[_image])
+      else: sc_key = (gt_v, "")
+ 
+      if sc_key not in self.score_cards: 
         new_card = {"verb":0.0, "n_image":0.0, "value":0.0, "value*":0.0, "n_value":0.0, "value-all":0.0, "value-all*":0.0}
-        self.score_cards[gt_v] = new_card
+        self.score_cards[sc_key] = new_card
       
       v_roles = []
       for k in range(0,max_r):
@@ -38,37 +42,52 @@ class imSituTensorEvaluation():
         if _id == -1: break
         v_roles.append(_id)
       
-      _score_card = self.score_cards[gt_v]
+      _score_card = self.score_cards[sc_key]
       _score_card["n_image"] += 1
       _score_card["n_value"] += len(v_roles)
      
       k = 0
       p_frame = None
-      verb_found = (torch.sum(_sorted_idx[0:self.topk] == gt_v).data == 1)[0] == 1
+      verb_found = (torch.sum(_sorted_idx[0:self.topk] == gt_v) == 1)
       if verb_found: _score_card["verb"] += 1
       p_frame = _pred[gt_v]  
-      
       all_found = True
+#      print p_frame
+#      print _ref
+#      print len(v_roles)
       for k in range(0, len(v_roles)):
-        nv = p_frame[k].data[0]
-        
+        nv = p_frame[k]
         found = False
         for r in range(0,self.nref):
+#          print nv
+#          print _ref[1 + 2*max_r*r + 2*k+1]
           if nv == _ref[1 + 2*max_r*r + 2*k+1]:
             found = True
             break
         if not found: all_found = False
         if found and verb_found: _score_card["value"] += 1
         if found: _score_card["value*"] += 1
-     
+#        print found
+#      print all_found
       if all_found and verb_found: _score_card["value-all"] += 1
       if all_found: _score_card["value-all*"] += 1
   
-  def get_average_results(self):
+  def combine(self, rv, card):
+    for (k,v) in card.items(): rv[k] += v
+
+  def get_average_results(self, groups = []):
     #average across score cards.  
-    nverbs = len(self.score_cards)
     rv = {"verb":0, "value":0 , "value*":0 , "value-all":0, "value-all*":0}
-    for (v, card) in self.score_cards.items():
+    agg_cards = {}
+    for (key, card) in self.score_cards.items():
+      (v,g) = key
+      if len(groups) == 0 or g in groups:
+        if v not in agg_cards: 
+          new_card = {"verb":0.0, "n_image":0.0, "value":0.0, "value*":0.0, "n_value":0.0, "value-all":0.0, "value-all*":0.0}
+          agg_cards[v] = new_card
+        self.combine(agg_cards[v], card)
+    nverbs = len(agg_cards)
+    for (v, card) in agg_cards.items():
       img = card["n_image"] 
       nvalue = card["n_value"]
       rv["verb"] += card["verb"]/img
@@ -76,7 +95,7 @@ class imSituTensorEvaluation():
       rv["value-all*"] += card["value-all*"]/img
       rv["value"] += card["value"]/nvalue
       rv["value*"] += card["value*"]/nvalue
-    
+      
     rv["verb"] /= nverbs
     rv["value-all"] /= nverbs
     rv["value-all*"] /= nverbs 
@@ -159,46 +178,51 @@ class imSituVerbRoleNounEncoder:
     verb = self.id_v[situation["verb"]]
     rv = {"verb": verb, "frames":[]}
     for frame in situation["frames"]:
-      _fr = []
+      _fr = {}
       for (r,n) in frame.items():
-        _fr.append((self.id_r[r], self.id_n[n]))
+        _fr[self.id_r[r]] =  self.id_n[n]
       rv["frames"].append(_fr)
     return rv     
 
-  def to_tensor(self, situation):
-    rv = self.encode(situation)
-    verb = rv["verb"]
-    items = [verb]
-    for frame in rv["frames"]:
+  #takes a list of situations
+  def to_tensor(self, situations, use_role = True, use_verb = True):
+    rv = []
+    for situation in situations:
+      _rv = self.encode(situation)
+      verb = _rv["verb"]
+      items = []
+      if use_verb: items.append(verb)
+      for frame in _rv["frames"]:
       #sort roles
-      _f = sorted(frame, key = lambda x : x[0])
-      k = 0
-      for (r,n) in _f: 
-        items.append(r)
-        items.append(n)
-        k+=1
-      while k < self.mr: 
-        items.append(self.pad_symbol())
-        items.append(self.pad_symbol())
-        k+=1
-    return torch.LongTensor(items) 
+        _f = sorted(frame, key = lambda x : x[0])
+        k = 0
+        for (r,n) in _f: 
+          if use_role : items.append(r)
+          items.append(n)
+          k+=1
+        while k < self.mr: 
+          if use_role: items.append(self.pad_symbol())
+          items.append(self.pad_symbol())
+          k+=1
+      rv.append(torch.LongTensor(items))
+    return torch.cat(rv)
   
   #the tensor is BATCH x VERB X FRAME
   def to_situation(self, tensor):
     (batch,verbd,_) = tensor.size()
     rv = []
     for b in range(0, batch):
-      _tesnor = tensor[b]
+      _tensor = tensor[b]
+      #_rv = []
       for verb in range(0, verbd):
-        _rv = []
         args = []
         __tensor = _tensor[verb]
         for j in range(0, self.verb_nroles(verb)):
           n = __tensor.data[j]
           args.append((self.verbposition_role(verb,j),n))
         situation = {"verb": verb, "frames":[args]}
-        _rv.append(self.decode(situation))
-      rv.append(_rv)
+        rv.append(self.decode(situation))
+      #rv.append(_rv)
     return rv
 
 class imSituVerbRoleLocalNounEncoder(imSituVerbRoleNounEncoder):
@@ -267,14 +291,19 @@ class imSituVerbRoleLocalNounEncoder(imSituVerbRoleNounEncoder):
     return rv
 
   def decode(self, situation):
+    #print situation
     verb = self.id_v[situation["verb"]]
     rv = {"verb": verb, "frames":[]}
     for frame in situation["frames"]:
-      _fr = []
+      _fr = {}
       for (vr,vrn) in frame:
-        n = self.id_n[self.vr_id_n[vr][vrn]]
+        if vrn not in self.vr_id_n[vr]: 
+          print "index error, verb = {}".format(verb)
+          n = -1
+        else:
+          n = self.id_n[self.vr_id_n[vr][vrn]]
         r = self.id_r[self.id_vr[vr][1]]
-        _fr.append((r,n))
+        _fr[r]=n
       rv["frames"].append(_fr)
     return rv 
 
@@ -316,7 +345,14 @@ class imSituSituation(data.Dataset):
         self.ids = list(self.imsitu.keys())
         self.encoder = encoder
         self.transform = transform
-         
+   
+   def index_image(self, index):
+        rv = []
+        index = index.view(-1)
+        for i in range(index.size()[0]):
+          rv.append(self.ids[index[i]])
+        return rv
+      
    def __getitem__(self, index):
         imsitu = self.imsitu
         _id = self.ids[index]
@@ -325,9 +361,9 @@ class imSituSituation(data.Dataset):
         img = Image.open(os.path.join(self.root, _id)).convert('RGB')
         
         if self.transform is not None: img = self.transform(img)
-        target = self.encoder.to_tensor(ann)
+        target = self.encoder.to_tensor([ann])
 
-        return img, target
+        return (torch.LongTensor([index]), img, target)
 
    def __len__(self):
         return len(self.ids)
