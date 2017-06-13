@@ -11,6 +11,8 @@ If you use the imSitu dataset in your research, please cite our CVPR '16 paper:
   year={2016}
 }
 
+```
+
 This document contains the following sections:
 
 - [Installation](#installation)
@@ -20,7 +22,6 @@ This document contains the following sections:
 - [Evaluation](#evaluation)
 - [Baselines](#baselines)
 
-```
 ## Installation
 This project depends on pytorch. Please visit http://pytorch.org/ for instructions. 
 
