@@ -163,7 +163,13 @@ class baseline_crf(nn.Module):
      self.split_vr = {}
      self.v_roles = {}
      #cnn
-     self.cnn = resnet_modified_large()  
+     print cnn_type
+     if cnn_type == "resnet_101" : self.cnn = resnet_modified_large()
+     elif cnn_type == "resnet_50": self.cnn = resnet_modified_medium()
+     elif cnn_type == "resnet_34": self.cnn = resnet_modified_small()
+     else: 
+       print "unknown base network" 
+       exit()
      self.rep_size = self.cnn.rep_size()
      for s in range(0,len(splits)): self.split_vr[s] = []
 
@@ -252,7 +258,7 @@ class baseline_crf(nn.Module):
          start = self.splits[s]*pos+len(self.encoding.vr_n_id[r])
          end = self.splits[s]*(pos+1)
          for k in range(start,end):
-           linear.bias.data[k] = neg_inf
+           linear.bias.data[k] = -100 #neg_inf
             
    #expects a list of vectors, BxD
    #returns the max index of every vector, max value of each vector and the log_sum_exp of the vector
@@ -396,6 +402,8 @@ class baseline_crf(nn.Module):
          v = _ref[0]
          pots = _v[v]
          for (pos,(s, idx, rid)) in enumerate(self.v_roles[v]):
+       #    print _vrn[s][idx][_ref[1 + 2*mr*r + 2*pos + 1]]
+#_vrn[s][idx][
            pots = pots + _vrn[s][idx][_ref[1 + 2*mr*r + 2*pos + 1]]
          if pots.data[0] > _norm.data[0]: 
            print "inference error"
@@ -418,8 +426,8 @@ def predict_human_readable (dataset_loader, simple_dataset,  model, outdir, top_
   model.eval()  
   print "predicting..." 
   mx = len(dataset_loader) 
-  for i, (index, input, index) in enumerate(dataset_loader):
-      print "{}/{}".format(i,mx)
+  for i, (input, index) in enumerate(dataset_loader):
+      print "{}/{} batches".format(i+1,mx)
       input_var = torch.autograd.Variable(input.cuda(), volatile = True)
       (scores,predictions)  = model.forward_max(input_var)
       #(s_sorted, idx) = torch.sort(scores, 1, True)
@@ -427,8 +435,9 @@ def predict_human_readable (dataset_loader, simple_dataset,  model, outdir, top_
       (b,p,d) = predictions.size()
       for _b in range(0,b):
         items = []
+        offset = _b *p
         for _p in range(0, p):
-          items.append(human[_b][_p])
+          items.append(human[offset + _p])
           items[-1]["score"] = scores.data[_b][_p]
         items = sorted(items, key = lambda x: -x["score"])[:top_k]
         name = simple_dataset.images[index[_b][0]].split(".")[:-1]
@@ -441,8 +450,8 @@ def compute_features(dataset_loader, simple_dataset,  model, outdir):
   model.eval()  
   print "computing features..." 
   mx = len(dataset_loader) 
-  for i, (index, input, index) in enumerate(dataset_loader):
-      if i % 10 == 0: print "{}/{}".format(i,mx)
+  for i, (input, index) in enumerate(dataset_loader):
+      print "{}/{} batches\r".format(i+1,mx) ,
       input_var = torch.autograd.Variable(input.cuda(), volatile = True)
       features  = model.forward_features(input_var).cpu().data
       b = index.size()[0]
@@ -451,6 +460,7 @@ def compute_features(dataset_loader, simple_dataset,  model, outdir):
         name.append("features")
         outfile = outdir + ".".join(name)
         torch.save(features[_b], outfile)
+  print "\ndone."
 
 def eval_model(dataset_loader, encoding, model):
     model.eval()
@@ -460,14 +470,15 @@ def eval_model(dataset_loader, encoding, model):
  
     mx = len(dataset_loader) 
     for i, (index, input, target) in enumerate(dataset_loader):
-      if i % 10 == 0: print "{}/{}".format(i,mx)
+      print "{}/{} batches\r".format(i+1,mx) ,
       input_var = torch.autograd.Variable(input.cuda(), volatile = True)
       target_var = torch.autograd.Variable(target.cuda(), volatile = True)
       (scores,predictions)  = model.forward_max(input_var)
       (s_sorted, idx) = torch.sort(scores, 1, True)
-      top1.add_point(target, predictions.data, idx)
-      top5.add_point(target, predictions.data, idx)
-    
+      top1.add_point(target, predictions.data, idx.data)
+      top5.add_point(target, predictions.data, idx.data)
+      
+    print "\ndone."
     return (top1, top5) 
 
 def train_model(max_epoch, eval_frequency, train_loader, dev_loader, model, encoding, optimizer, save_dir, timing = False): 
@@ -479,9 +490,10 @@ def train_model(max_epoch, eval_frequency, train_loader, dev_loader, model, enco
     top1 = imSituTensorEvaluation(1, 3, encoding)
     top5 = imSituTensorEvaluation(5, 3, encoding)
     loss_total = 0 
-    print_freq = 5
+    print_freq = 10
     total_steps = 0
     avg_scores = []
+  
     for k in range(0,max_epoch):  
       for i, (index, input, target) in enumerate(train_loader):
         total_steps += 1
@@ -493,7 +505,7 @@ def train_model(max_epoch, eval_frequency, train_loader, dev_loader, model, enco
         target_var = torch.autograd.Variable(target.cuda())
         (_,v,vrn,norm,scores,predictions)  = pmodel(input_var)
         (s_sorted, idx) = torch.sort(scores, 1, True)
-      
+        #print norm 
         if timing : print "forward time = {}".format(time.time() - t1)
         optimizer.zero_grad()
         t1 = time.time()
@@ -501,13 +513,14 @@ def train_model(max_epoch, eval_frequency, train_loader, dev_loader, model, enco
         if timing: print "loss time = {}".format(time.time() - t1)
         t1 = time.time()
         loss.backward()
+        #print loss
         if timing: print "backward time = {}".format(time.time() - t1)
         optimizer.step()
         loss_total += loss.data[0]
         #score situation
         t2 = time.time() 
-        top1.add_point(target, predictions.data, idx)
-        top5.add_point(target, predictions.data, idx)
+        top1.add_point(target, predictions.data, idx.data)
+        top5.add_point(target, predictions.data, idx.data)
      
         if timing: print "eval time = {}".format(time.time() - t2)
         if timing: print "batch time = {}".format(time.time() - t0)
@@ -536,24 +549,6 @@ def train_model(max_epoch, eval_frequency, train_loader, dev_loader, model, enco
             torch.save(model.state_dict(), save_dir + "/{0}.model".format(maxv))   
             print "new best model saved! {0}".format(maxv)
 
-          #if len(avg_scores) > 3:
-            #impr = .003
-            #print "average scores:  {}".format(avg_scores)
-            #[2.5 1 2 2 1 1 1 
-           # if False and (maxv - max(avg_scores[:-1])) < impr and (maxv - max(avg_scores[:-2]))  < impr:
-            #if (max(avg_scores[-3:]) - min(avg_scores[-3:])) < impr or (max(avg_scores[-3:]) < maxv):
-              #decrease learning rate
-            #  curr_lr = curr_lr * lr_decay
-            #  print "updating learning rate to {}".format(curr_lr)
-            #  for param_group in optimizer.param_groups:
-            #    param_group['lr'] = curr_lr
-              #optimizer = optim.SGD(model.parameters(), lr=curr_lr,  weight_decay = 5e-4, momentum = .9)
-            #  print "restoring model to max"
-            #  model = situation_crf(encoder, ngpus = len(device_array) )  
-            #  model.load_state_dict(torch.load(save_dir +"/{0}.model".format(maxv)))
-            #  pmodel = torch.nn.DataParallel(model, device_ids=device_array)
-            #  model.train()
-            #  print "restored to {}".format(maxv)
           top1 = imSituTensorEvaluation(1, 3, encoding)
           top5 = imSituTensorEvaluation(5, 3, encoding)
           loss_total = 0
@@ -564,26 +559,26 @@ if __name__ == "__main__":
   parser = argparse.ArgumentParser(description="imsitu Situation CRF. Training, evaluation, prediction and features.") 
   parser.add_argument("--command", choices = ["train", "eval", "predict", "features"], required = True)
   parser.add_argument("--output_dir", help="location to put output, such as models, features, predictions")
-  parser.add_argument("--image_dir", default="../resized_256", help="location of images to process")
-  parser.add_argument("--dataset_dir", default="../", help="location of train.json, dev.json, ect.") 
+  parser.add_argument("--image_dir", default="./resized_256", help="location of images to process")
+  parser.add_argument("--dataset_dir", default="./", help="location of train.json, dev.json, ect.") 
   parser.add_argument("--weights_file", help="the model to start from")
   parser.add_argument("--encoding_file", help="a file corresponding to the encoder")
-  parser.add_argument("--cnn_type", choices=["vgg16", "resnet17", "resnet51", "resnet101"], default="resnet101", help="the cnn to initilize the crf with") 
+  parser.add_argument("--cnn_type", choices=["resnet_34", "resnet_50", "resnet_101"], default="resnet_101", help="the cnn to initilize the crf with") 
   parser.add_argument("--batch_size", default=64, help="batch size for training", type=int)
   parser.add_argument("--learning_rate", default=1e-5, help="learning rate for ADAM", type=float)
   parser.add_argument("--weight_decay", default=5e-4, help="learning rate decay for ADAM", type=float)  
   parser.add_argument("--eval_frequency", default=500, help="evaluate on dev set every N training steps", type=int) 
   parser.add_argument("--training_epochs", default=20, help="total number of training epochs", type=int)
-  parser.add_argument("--eval_file", default="dev.json")
-  parser.add_argument("--top_k", default="10", type=int)
+  parser.add_argument("--eval_file", default="dev.json", help="the dataset file to evaluate on, ex. dev.json test.json")
+  parser.add_argument("--top_k", default="10", type=int, help="topk to use for writing predictions to file")
 
   args = parser.parse_args()
   if args.command == "train":
-    print "training"
+    print "command = training"
     train_set = json.load(open(args.dataset_dir+"/train.json"))
     dev_set = json.load(open(args.dataset_dir+"/dev.json"))
 
-    if args.encoding_file == None: 
+    if args.encoding_file is None: 
       encoder = imSituVerbRoleLocalNounEncoder(train_set)
       torch.save(encoder, args.output_dir + "/encoder")
     else:
@@ -605,12 +600,11 @@ if __name__ == "__main__":
     dev_loader  = torch.utils.data.DataLoader(dataset_dev, batch_size = batch_size, shuffle = True, num_workers = 3) 
 
     model.cuda()
-
-    optimizer = optim.Adam(model.parameters(), lr = args.learning_rate, weight_decay = args.weight_decay)
+    optimizer = optim.Adam(model.parameters(), lr = args.learning_rate , weight_decay = args.weight_decay)
     train_model(args.training_epochs, args.eval_frequency, train_loader, dev_loader, model, encoder, optimizer, args.output_dir)
   
   elif args.command == "eval":
-    print "evaluating {}".format(args.dataset_dir)
+    print "command = evaluating"
     eval_file = json.load(open(args.dataset_dir + "/" + args.eval_file))  
       
     if args.encoding_file is None: 
@@ -642,6 +636,7 @@ if __name__ == "__main__":
     print "Average :{:.2f} {} {}".format(avg_score*100, format_dict(top1_a,"{:.2f}", "1-"), format_dict(top5_a, "{:.2f}", "5-"))
        
   elif args.command == "features":
+    print "command = features"
     if args.encoding_file is None: 
       print "expecting encoder file to run features"
       exit()
@@ -665,6 +660,7 @@ if __name__ == "__main__":
     compute_features(image_loader, folder_dataset, model, args.output_dir)    
 
   elif args.command == "predict":
+    print "command = predict"
     if args.encoding_file is None: 
       print "expecting encoder file to run features"
       exit()
@@ -673,7 +669,7 @@ if __name__ == "__main__":
  
     print "creating model..." 
     model = baseline_crf(encoder, cnn_type = args.cnn_type)
-    
+ 
     if args.weights_file is None:
       print "expecting weight file to run features"
       exit()

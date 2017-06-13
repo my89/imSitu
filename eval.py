@@ -108,9 +108,9 @@ if __name__ == "__main__":
   parser.add_argument("--sparsity_min", default = 0, type=int, help="only evaluate images that meet some sparsity threshold")
   parser.add_argument("--sparsity_max", default = -1, type=int, help="only evaluate images that meet some sparsity threshold")
   parser.add_argument("--eval_file", default="dev.json", help="evaluation file")
-  parser.add_argument("--image_dir", default="../resized_256", help="location of images to process")
+  parser.add_argument("--image_dir", default="./resized_256", help="location of images to process")
   parser.add_argument("--batch_size", default=64, help="batch size for training", type=int)
-  parser.add_argument("--dataset_dir", default="../", help="location of train.json, dev.json, ect.") 
+  parser.add_argument("--dataset_dir", default="./", help="location of train.json, dev.json, ect.") 
   parser.add_argument("--trust_encoder", default=False, help="if trusted, skip re-encoding intro trusted, which takes a long time", action='store_true')
  
   args = parser.parse_args()
@@ -198,7 +198,7 @@ if __name__ == "__main__":
   avg_score = top1_a["verb"] + top1_a["value"] + top1_a["value-all"] + top5_a["verb"] + top5_a["value"] + top5_a["value-all"] + top5_a["value*"] + top5_a["value-all*"]
   avg_score /= 8
 
-  print "\ntop-1\n\tverb     \t{:.2f}%\n\tvalue    \t{:.2f}%\n\tvalue-all\t{:.2f}%\ntop-5\n\tverb     \t{:.2f}%\n\tvalue    \t{:.2f}%\n\tvalue-all\t{:.2f}%\ngold verbs\n\tvalue    \t{:.2f}%\n\tvalue-all\t{:.2f}%\nsummary \n\t{:.2f}%".format(100*top1_a["verb"], 100*top1_a["value"], 100*top1_a["value-all"], 100*top5_a["verb"], 100*top5_a["value"], 100*top5_a["value-all"], 100*top5_a["value*"], 100*top5_a["value-all*"], 100*avg_score)
+  print "\ntop-1\n\tverb     \t{:.2f}%\n\tvalue    \t{:.2f}%\n\tvalue-all\t{:.2f}%\ntop-5\n\tverb     \t{:.2f}%\n\tvalue    \t{:.2f}%\n\tvalue-all\t{:.2f}%\ngold verbs\n\tvalue    \t{:.2f}%\n\tvalue-all\t{:.2f}%\nsummary \n\tmean    \t{:.2f}%".format(100*top1_a["verb"], 100*top1_a["value"], 100*top1_a["value-all"], 100*top5_a["verb"], 100*top5_a["value"], 100*top5_a["value-all"], 100*top5_a["value*"], 100*top5_a["value-all*"], 100*avg_score)
 
 
   #print "Average :{:.2f} {} {}".format(avg_score*100, format_dict(top1_a,"{:.2f}", "1-"), format_dict(top5_a, "{:.2f}", "5-"))    

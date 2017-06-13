@@ -1,5 +1,5 @@
 # imSitu
-Suport, annotation, and evaluation files for the imSitu dataset. 
+Suport, annotation, evaluation, and baseline files for the imSitu dataset. 
 
 If you use the imSitu dataset in your research, please cite our CVPR '16 paper:
 
@@ -11,6 +11,11 @@ If you use the imSitu dataset in your research, please cite our CVPR '16 paper:
   year={2016}
 }
 ```
+## installation
+The installation script downloads resized images for the dataset and baseline models.
+'''
+./install.sh 
+'''
 
 ## imsitu_space.json
 A json file defining the metadata used for imSitu. 
@@ -77,15 +82,17 @@ Evaluation scripts in the style presented in https://arxiv.org/pdf/1612.00901v1.
 
 (Note, this is slightly simplified from the CVPR '16. We removed the value-full measure that computes how often an entire frame output matches a references and instead just report value-all, how often the system output matches on all roles using any annotation. This was called value-any in the original paper).  
 
+The scripts supports two style of evaluation: 1) evaluation of a top-k list output from a model and 2) evaluation of a model directly in pytorch.
+
+### top-k list evaluation
 ```
-#download output of baseline crf on the dev set
+#download a file with output of the vgg baseline crf on the dev set
 wget https://s3.amazonaws.com/my89-frame-annotation/public/crf.output.tar.gz
 tar -xvf crf.output.tar.gz
 
 # evaluate crf.output against dev set output
-python evaluation/evaluation.py --sys_output crf.output
-
-reading input ... 12700353/12700800 (100.00%) 12700800
+python eval.py --format file --system_output crf.output
+batch 25200  out of 25200
 top-1
 	verb      	32.25%
 	value     	24.56%
@@ -122,8 +129,8 @@ Each line should contain an image in the evaluation set (in this case the dev se
 To evaluate on the test set:
  
 ```
-python evaluation/evaluation.py --sys_output crf_test.output --ref_set test.json
-reading input ... 12700301/12700800 (100.00%) 12700800
+python eval.py --format file --system_output crf_test.output --eval_file test.json
+batch 25200  out of 25200
 top-1
 	verb      	32.34%
 	value     	24.64%
@@ -142,10 +149,10 @@ summary
 To evaluate on subsets of the data based on frequency criterion of verb-role-noun combinations in the training set. For example, to evaluate on images that require prediction of verb-role-noun combinations occuring between 0 and 10 times on the training set (inclusive)
 
 ```
-python evaluation/evaluate.py --sys_output crf.output --sparsity_min_max 0 10
-applying sparsity threshold >= 0 and <= 10
-total examples = 8569 where verb-role-noun occurance <= 10 and >= 0 
-reading input ... 12700353/12700800 (100.00%) 12700800
+python eval.py --format file --system_output crf.output --sparsity_max 10
+evaluating images where most rare verb-role-noun in training is x , s.t. 0 <= x <= 10
+total images = 8569
+batch 25200  out of 25200
 top-1
 	verb      	19.89%
 	value     	11.68%
@@ -160,5 +167,58 @@ gold verbs
 summary
 	mean      	21.28%
 ```
+### model output evaluation
 
+To evaluate an existing model, for example the baseline model with resnet 101 as the base network:
 
+'''
+python eval.py --format model --include baseline_crf.py --weights_file baseline_models/baseline_resnet_101 --encoding_file baseline_models/baseline_encoder --trust_encoder --batch_size 128 --image_dir resized_256/
+
+creating model...
+resnet_101
+total encoding vrn : 89766, with padding in 149085 groups : 3
+loading model weights...
+evaluating model...
+batch 197 out of 197
+top-1
+	verb     	36.76%
+	value    	28.12%
+	value-all	16.52%
+top-5
+	verb     	63.62%
+	value    	47.03%
+	value-all	25.36%
+gold verbs
+	value    	68.43%
+	value-all	32.01%
+summary 
+	mean    	39.73%
+'''
+
+or for images requiring rare predictions:
+
+'''
+python eval.py --format model --include baseline_crf.py --weights_file baseline_models/baseline_resnet_101 --encoding_file baseline_models/baseline_encoder --trust_encoder --batch_size 128 --image_dir resized_256/ --sparsity_max 10
+
+evaluating images where most rare verb-role-noun in training is x , s.t. 0 <= x <= 10
+total images = 8569
+creating model...
+resnet_101
+total encoding vrn : 89766, with padding in 149085 groups : 3
+loading model weights...
+evaluating model...
+batch 197 out of 197
+top-1
+	verb     	23.50%
+	value    	13.19%
+	value-all	2.10%
+top-5
+	verb     	47.38%
+	value    	26.15%
+	value-all	4.19%
+gold verbs
+	value    	51.03%
+	value-all	7.09%
+summary 
+	mean    	21.83%
+'''

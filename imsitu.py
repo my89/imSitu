@@ -15,7 +15,7 @@ class imSituTensorEvaluation():
   def clear(self): 
     self.score_cards = {}
 
-  def add_point(self, encoded_reference, encoded_predictions, sorted_idx, image_names):
+  def add_point(self, encoded_reference, encoded_predictions, sorted_idx, image_names = None):
     #encoded predictions should be batch x verbs x values #assumes the are the same order as the references
     #encoded reference should be batch x 1+ references*roles,values (sorted) 
     (b,tv,l) = encoded_predictions.size()
@@ -23,13 +23,13 @@ class imSituTensorEvaluation():
       _pred = encoded_predictions[i]
       _ref = encoded_reference[i]
       _sorted_idx = sorted_idx[i]
-      _image = image_names[i]
+      if image_names is not None: _image = image_names[i]
 
       lr = _ref.size()[0]     
       max_r = (lr - 1)/2/self.nref
 
       gt_v = _ref[0]
-      if _image in self.image_group: sc_key = (gt_v, self.image_group[_image])
+      if image_names is not None and _image in self.image_group: sc_key = (gt_v, self.image_group[_image])
       else: sc_key = (gt_v, "")
  
       if sc_key not in self.score_cards: 
