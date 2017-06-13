@@ -227,6 +227,7 @@ summary
 
 ## Baseline Models
 We currently provide three baseline models trained with resnet base networks. The orginal vgg baseline is currently only provided in caffe, and listed here for reference.
+<center>
 <table>
 <tr> <td colspan="10" style="text-align:center"> Dev All Predictions </td> </tr>
 <tr> <td>  </td><td colspan="3"> top-1 </td> <td colspan="3"> top-5 </td> <td colspan="2"> gold verbs </td> <td>  </td> </tr>
@@ -245,4 +246,5 @@ We currently provide three baseline models trained with resnet base networks. Th
 <tr> <td>resnet-34</td> <td> 19.24 </td> <td> 10.35 </td> <td> 1.06 </td> <td> 42.34 </td> <td> 22.34 </td> <td> 2.73 </td> <td> 48.48 </td> <td> 4.66 </td> <td> 18.90 </td> </tr>
 <tr> <td>resnet-50</td> <td> 21.54 </td> <td> 11.91 </td> <td> 1.88 </td> <td> 46.16 </td> <td> 25.00 </td> <td> 3.72 </td> <td> 50.06 </td> <td> 6.20 </td> <td> 20.81 </td> </tr>
 <tr> <td>resnet-101</td> <td> 23.50 </td> <td> 13.19 </td> <td> 2.10 </td> <td> 47.38 </td> <td> 26.15 </td> <td> 4.19 </td> <td> 51.03 </td> <td> 7.09 </td> <td> 21.83 </td> </tr>
-</table>  
+</table>
+</center>  
