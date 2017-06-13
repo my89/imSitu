@@ -11,13 +11,13 @@ If you use the imSitu dataset in your research, please cite our CVPR '16 paper:
   year={2016}
 }
 ```
-## installation
+## Installation
 The installation script downloads resized images for the dataset and baseline models.
 ```
 ./install.sh 
 ```
 
-## imsitu_space.json
+## Metadata: imsitu_space.json
 A json file defining the metadata used for imSitu. 
 
 Each verb in imSitu is mapped to a FrameNet frame, for example, 'clinging' is mapped to Retaining, and each of its roles is mapped to a role associated with that frame, for example, the imSitu role 'clungto' for clinging is mapped to the framenet role 'theme'. Each noun in space corresponds to a synset from Wordnet.
@@ -51,7 +51,7 @@ nouns["n02129165"]
 # u'gloss': [u'lion', u'king of beasts', u'Panthera leo']}
 
 ```
-## train.json, dev.json, test.json
+## Standard splits: train.json, dev.json, test.json
 
 These files contain annotations for the train/dev/test set. Each image in the imSitu dataset is annotated with three frames corresponding to one verb. Each annotation contains a noun value from Wordnet, or the empty string, indicating empty, for every role associated with the verb
 
@@ -67,7 +67,7 @@ train['clinging_250.jpg']
 
 ```
 
-## images
+## Images
 Images resized to 256x256 here (3.7G):
 
 https://s3.amazonaws.com/my89-frame-annotation/public/of500_images_resized.tar
@@ -76,7 +76,7 @@ Original images can be found here (34G) :
 
 https://s3.amazonaws.com/my89-frame-annotation/public/of500_images_resized.tar
 
-## evaluation
+## Evaluation
 
 Evaluation scripts in the style presented in https://arxiv.org/pdf/1612.00901v1.pdf
 
@@ -84,7 +84,7 @@ Evaluation scripts in the style presented in https://arxiv.org/pdf/1612.00901v1.
 
 The scripts supports two style of evaluation: 1) evaluation of a top-k list output from a model and 2) evaluation of a model directly in pytorch.
 
-### top-k list evaluation
+### Top-k list evaluation
 ```
 #download a file with output of the vgg baseline crf on the dev set
 wget https://s3.amazonaws.com/my89-frame-annotation/public/crf.output.tar.gz
@@ -167,8 +167,10 @@ gold verbs
 summary
 	mean      	21.28%
 ```
-### model output evaluation
 
+### Model output evaluation
+
+Models are evaluated by importing models through the --include flag, and providing weights and an encoder (that maps situations to machine ids).
 To evaluate an existing model, for example the baseline model with resnet 101 as the base network:
 
 ```
@@ -222,3 +224,12 @@ gold verbs
 summary 
 	mean    	21.83%
 ```
+
+## Baseline Models
+We currently provide three baseline models trained with resnet base networks:
+
+<table>
+<tr> <td colspan="9"> Rare Predictions (<= 10 training examples) </td> </tr>
+<tr> <td>  </td><td colspan="3"> top-1 </td> <td colspan="3"> top-5 </td> <td colspan="2"> gold verbs </td> </tr>
+<tr> <td>resnet-101</td> <td> 23.50% </td> <td> 13.19% </td> <td> 2.10% </td> <td> 47.38% </td> <td> 26.15 </td> <td> 4.19% </td> <td> 51.03% </td> <td> 7.09% </td> <td> 21.83 % </td> </tr>
+</table>  
