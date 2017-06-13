@@ -13,9 +13,9 @@ If you use the imSitu dataset in your research, please cite our CVPR '16 paper:
 ```
 ## installation
 The installation script downloads resized images for the dataset and baseline models.
-'''
+```
 ./install.sh 
-'''
+```
 
 ## imsitu_space.json
 A json file defining the metadata used for imSitu. 
@@ -171,7 +171,7 @@ summary
 
 To evaluate an existing model, for example the baseline model with resnet 101 as the base network:
 
-'''
+```
 python eval.py --format model --include baseline_crf.py --weights_file baseline_models/baseline_resnet_101 --encoding_file baseline_models/baseline_encoder --trust_encoder --batch_size 128 --image_dir resized_256/
 
 creating model...
@@ -193,11 +193,11 @@ gold verbs
 	value-all	32.01%
 summary 
 	mean    	39.73%
-'''
+```
 
 or for images requiring rare predictions:
 
-'''
+```
 python eval.py --format model --include baseline_crf.py --weights_file baseline_models/baseline_resnet_101 --encoding_file baseline_models/baseline_encoder --trust_encoder --batch_size 128 --image_dir resized_256/ --sparsity_max 10
 
 evaluating images where most rare verb-role-noun in training is x , s.t. 0 <= x <= 10
@@ -221,4 +221,4 @@ gold verbs
 	value-all	7.09%
 summary 
 	mean    	21.83%
-'''
+```
