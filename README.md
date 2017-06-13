@@ -237,8 +237,8 @@ We currently provide three baseline models trained with resnet base networks. Th
 <tr> <td>resnet-101</td> <td> 36.76 </td> <td> 28.12 </td> <td> 16.52 </td> <td> 63.62 </td> <td> 47.03 </td> <td> 25.36 </td> <td> 68.43 </td> <td> 32.01 </td> <td> 39.73 </td> </tr>
 </table>
   
-<table>
-<tr> <td colspan="9"> Dev Rare Predictions (<= 10 training examples) </td> </tr>
+<table style="text-align:center">
+<tr> <td colspan="10"> Dev Rare Predictions (<= 10 training examples) </td> </tr>
 <tr> <td>  </td><td colspan="3"> top-1 </td> <td colspan="3"> top-5 </td> <td colspan="2"> gold verbs </td> <td>  </td> </tr>
 <tr> <td> </td> <td> verb </td> <td> value </td> <td> value-all </td> <td> verb </td> <td> value </td> <td> value-all </td> <td> value </td> <td> value-all </td> <td> mean </td>
 <tr> <td>vgg-16</td> <td>19.89 </td> <td> 11.68 </td> <td> 2.85 </td> <td> 44.00 </td> <td> 24.93 </td> <td> 6.16 </td> <td> 50.80 </td> <td> 9.97 </td> <td> 21.28 </td> </tr>
