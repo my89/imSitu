@@ -239,7 +239,7 @@ We currently provide three baseline models trained with resnet base networks. Th
 </table>
   
 <table>
-<tr> <td colspan="10" style="text-align:center"> Dev Rare Predictions (<= 10 training examples) </td> </tr>
+<tr> <td colspan="10" style="text-align:center"> <center>Dev Rare Predictions (<= 10 training examples) </center></td> </tr>
 <tr> <td>  </td><td colspan="3"> top-1 </td> <td colspan="3"> top-5 </td> <td colspan="2"> gold verbs </td> <td>  </td> </tr>
 <tr> <td> </td> <td> verb </td> <td> value </td> <td> value-all </td> <td> verb </td> <td> value </td> <td> value-all </td> <td> value </td> <td> value-all </td> <td> mean </td>
 <tr> <td>vgg-16</td> <td>19.89 </td> <td> 11.68 </td> <td> 2.85 </td> <td> 44.00 </td> <td> 24.93 </td> <td> 6.16 </td> <td> 50.80 </td> <td> 9.97 </td> <td> 21.28 </td> </tr>
