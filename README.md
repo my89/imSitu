@@ -14,7 +14,7 @@ If you use the imSitu dataset in your research, please cite our CVPR '16 paper:
 ## Installation
 The installation script downloads resized images for the dataset and baseline models.
 ```
-./install.sh 
+> ./install.sh 
 ```
 
 ## Metadata: imsitu_space.json
@@ -87,11 +87,11 @@ The scripts supports two style of evaluation: 1) evaluation of a top-k list outp
 ### Top-k list evaluation
 ```
 #download a file with output of the vgg baseline crf on the dev set
-wget https://s3.amazonaws.com/my89-frame-annotation/public/crf.output.tar.gz
-tar -xvf crf.output.tar.gz
+> wget https://s3.amazonaws.com/my89-frame-annotation/public/crf.output.tar.gz
+> tar -xvf crf.output.tar.gz
 
 # evaluate crf.output against dev set output
-python eval.py --format file --system_output crf.output
+> python eval.py --format file --system_output crf.output
 batch 25200  out of 25200
 top-1
 	verb      	32.25%
@@ -129,7 +129,7 @@ Each line should contain an image in the evaluation set (in this case the dev se
 To evaluate on the test set:
  
 ```
-python eval.py --format file --system_output crf_test.output --eval_file test.json
+> python eval.py --format file --system_output crf_test.output --eval_file test.json
 batch 25200  out of 25200
 top-1
 	verb      	32.34%
@@ -149,7 +149,7 @@ summary
 To evaluate on subsets of the data based on frequency criterion of verb-role-noun combinations in the training set. For example, to evaluate on images that require prediction of verb-role-noun combinations occuring between 0 and 10 times on the training set (inclusive)
 
 ```
-python eval.py --format file --system_output crf.output --sparsity_max 10
+> python eval.py --format file --system_output crf.output --sparsity_max 10
 evaluating images where most rare verb-role-noun in training is x , s.t. 0 <= x <= 10
 total images = 8569
 batch 25200  out of 25200
@@ -170,11 +170,10 @@ summary
 
 ### Model output evaluation
 
-Models are evaluated by importing models through the --include flag, and providing weights and an encoder (that maps situations to machine ids).
-To evaluate an existing model, for example the baseline model with resnet 101 as the base network:
+Models are evaluated by importing models through the --include flag, and providing weights and an encoder (that maps situations to machine ids). The evaluation script assumes that all required arguments to the model are supplied as defaults in the model constructor. To evaluate an existing model, for example the baseline model with resnet 101 as the base network:
 
 ```
-python eval.py --format model --include baseline_crf.py --weights_file baseline_models/baseline_resnet_101 --encoding_file baseline_models/baseline_encoder --trust_encoder --batch_size 128 --image_dir resized_256/
+> python eval.py --format model --include baseline_crf.py --weights_file baseline_models/baseline_resnet_101 --encoding_file baseline_models/baseline_encoder --trust_encoder --batch_size 128 --image_dir resized_256/
 
 creating model...
 resnet_101
@@ -200,7 +199,7 @@ summary
 or for images requiring rare predictions:
 
 ```
-python eval.py --format model --include baseline_crf.py --weights_file baseline_models/baseline_resnet_101 --encoding_file baseline_models/baseline_encoder --trust_encoder --batch_size 128 --image_dir resized_256/ --sparsity_max 10
+> python eval.py --format model --include baseline_crf.py --weights_file baseline_models/baseline_resnet_101 --encoding_file baseline_models/baseline_encoder --trust_encoder --batch_size 128 --image_dir resized_256/ --sparsity_max 10
 
 evaluating images where most rare verb-role-noun in training is x , s.t. 0 <= x <= 10
 total images = 8569
@@ -226,10 +225,10 @@ summary
 ```
 
 ## Baseline Models
-We currently provide three baseline models trained with resnet base networks. The orginal vgg baseline is currently only provided in caffe, and listed here for reference.
+We currently provide three baseline models trained with resnet base networks. The orginal vgg baseline is currently only provided in caffe, and listed here for reference. The install script puts the associated models and encoder into the baseline_models directory.
 <center>
 <table>
-<tr> <td colspan="10" style="text-align:center"> Dev All Predictions </td> </tr>
+<tr> <td colspan="10"> Dev All Predictions </td> </tr>
 <tr> <td>  </td><td colspan="3"> top-1 </td> <td colspan="3"> top-5 </td> <td colspan="2"> gold verbs </td> <td>  </td> </tr>
 <tr> <td> </td> <td> verb </td> <td> value </td> <td> value-all </td> <td> verb </td> <td> value </td> <td> value-all </td> <td> value </td> <td> value-all </td> <td> mean </td>
 <tr> <td>vgg-16</td> <td> 32.25 </td> <td> 24.56 </td> <td> 14.28 </td> <td> 58.64 </td> <td> 42.68 </td> <td> 22.75 </td> <td> 65.90 </td> <td> 29.50 </td> <td> 36.32 </td> </tr>
@@ -239,7 +238,7 @@ We currently provide three baseline models trained with resnet base networks. Th
 </table>
   
 <table>
-<tr> <td colspan="10" style="text-align:center"> <center>Dev Rare Predictions (<= 10 training examples) </center></td> </tr>
+<tr> <td colspan="10"> Dev Rare Predictions (<= 10 training examples) </td> </tr>
 <tr> <td>  </td><td colspan="3"> top-1 </td> <td colspan="3"> top-5 </td> <td colspan="2"> gold verbs </td> <td>  </td> </tr>
 <tr> <td> </td> <td> verb </td> <td> value </td> <td> value-all </td> <td> verb </td> <td> value </td> <td> value-all </td> <td> value </td> <td> value-all </td> <td> mean </td>
 <tr> <td>vgg-16</td> <td>19.89 </td> <td> 11.68 </td> <td> 2.85 </td> <td> 44.00 </td> <td> 24.93 </td> <td> 6.16 </td> <td> 50.80 </td> <td> 9.97 </td> <td> 21.28 </td> </tr>
@@ -247,4 +246,47 @@ We currently provide three baseline models trained with resnet base networks. Th
 <tr> <td>resnet-50</td> <td> 21.54 </td> <td> 11.91 </td> <td> 1.88 </td> <td> 46.16 </td> <td> 25.00 </td> <td> 3.72 </td> <td> 50.06 </td> <td> 6.20 </td> <td> 20.81 </td> </tr>
 <tr> <td>resnet-101</td> <td> 23.50 </td> <td> 13.19 </td> <td> 2.10 </td> <td> 47.38 </td> <td> 26.15 </td> <td> 4.19 </td> <td> 51.03 </td> <td> 7.09 </td> <td> 21.83 </td> </tr>
 </table>
-</center>  
+</center> 
+
+### Feature extraction
+To extract features for images in a directory from the baseline model:
+
+```
+> python baseline_crf.py --command features --cnn_type resnet_101 --weights_file baseline_models/baseline_resnet_101 --encoding_file baseline_models/baseline_encoder --image_dir examples_images/ --output_dir examples_predictions/
+command = features
+creating model...
+resnet_101
+total encoding vrn : 89766, with padding in 149085 groups : 3
+loading model weights...
+computing features...
+1/1 batches
+done.
+
+> python -c "import torch; print torch.load('examples_features/jumping_100.features')"
+
+-9.7813e-01
+-4.5232e-03
+ 1.3262e+00
+     ⋮     
+-2.5212e-02
+-2.8616e-02
+-2.4452e-02
+[torch.FloatTensor of size 1024]
+
+```
+
+### Model predictions
+To output the top-k situation for images in a directory from the baseline model:
+
+```
+> python baseline_crf.py --command predict --cnn_type resnet_101 --weights_file baseline_models/baseline_resnet_101 --encoding_file baseline_models/baseline_encoder --image_dir examples_images/ --output_dir examples_predictions/ --top_k 1
+command = predict
+creating model...
+resnet_101
+total encoding vrn : 89766, with padding in 149085 groups : 3
+loading model weights...
+predicting...
+1/1 batches
+ 
+> python -c "import json; print json.load(open('examples_predictions/jumping_101.predictions'))"
+[{u'frames': [{u'source': u'n09334396', u'destination': u'n09334396', u'obstacle': u'n03327234', u'place': u'n13837009', u'agent': u'n02374451'}], u'verb': u'jumping', u'score': 2.9484357833862305}]
