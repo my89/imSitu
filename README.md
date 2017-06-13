@@ -10,14 +10,27 @@ If you use the imSitu dataset in your research, please cite our CVPR '16 paper:
   booktitle={Conference on Computer Vision and Pattern Recognition},
   year={2016}
 }
+
+This document contains the following sections:
+
+- [Installation](#installation)
+- [Metadata](#metadata)
+- [Splits](#splits)
+- [Images](#images)
+- [Evaluation](#evaluation)
+- [Baselines](#baselines)
+
 ```
 ## Installation
+This project depends on pytorch. Please visit http://pytorch.org/ for instructions. 
+
 The installation script downloads resized images for the dataset and baseline models.
 ```
 > ./install.sh 
 ```
 
-## Metadata: imsitu_space.json
+## Metadata
+### imsitu_space.json
 A json file defining the metadata used for imSitu. 
 
 Each verb in imSitu is mapped to a FrameNet frame, for example, 'clinging' is mapped to Retaining, and each of its roles is mapped to a role associated with that frame, for example, the imSitu role 'clungto' for clinging is mapped to the framenet role 'theme'. Each noun in space corresponds to a synset from Wordnet.
@@ -51,7 +64,9 @@ nouns["n02129165"]
 # u'gloss': [u'lion', u'king of beasts', u'Panthera leo']}
 
 ```
-## Standard splits: train.json, dev.json, test.json
+## Splits 
+
+### train.json, dev.json, test.json
 
 These files contain annotations for the train/dev/test set. Each image in the imSitu dataset is annotated with three frames corresponding to one verb. Each annotation contains a noun value from Wordnet, or the empty string, indicating empty, for every role associated with the verb
 
@@ -224,7 +239,7 @@ summary
 	mean    	21.83%
 ```
 
-## Baseline Models
+## Baselines
 We currently provide three baseline models trained with resnet base networks. The orginal vgg baseline is currently only provided in caffe, and listed here for reference. The install script puts the associated models and encoder into the baseline_models directory.
 <center>
 <table>
