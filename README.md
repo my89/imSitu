@@ -228,17 +228,18 @@ summary
 ## Baseline Models
 We currently provide three baseline models trained with resnet base networks. The orginal vgg baseline is currently only provided in caffe, and listed here for reference.
 <table style="text-align:center">
-<tr> <td colspan="9"> Dev All Predictions </td> </tr>
-<tr> <td>  </td><td colspan="3"> top-1 </td> <td colspan="3"> top-5 </td> <td colspan="2"> gold verbs </td> <td> mean </td> </tr>
+<tr> <td colspan="10"> Dev All Predictions </td> </tr>
+<tr> <td>  </td><td colspan="3"> top-1 </td> <td colspan="3"> top-5 </td> <td colspan="2"> gold verbs </td> <td>  </td> </tr>
 <tr> <td> </td> <td> verb </td> <td> value </td> <td> value-all </td> <td> verb </td> <td> value </td> <td> value-all </td> <td> value </td> <td> value-all </td> <td> mean </td>
 <tr> <td>vgg-16</td> <td> 32.25 </td> <td> 24.56 </td> <td> 14.28 </td> <td> 58.64 </td> <td> 42.68 </td> <td> 22.75 </td> <td> 65.90 </td> <td> 29.50 </td> <td> 36.32 </td> </tr>
 <tr> <td>resnet-34</td> <td> 33.25 </td> <td> 25.48 </td> <td> 14.96 </td> <td> 60.00 </td> <td> 43.87 </td> <td> 23.27 </td> <td> 66.95 </td> <td> 30.30 </td> <td> 37.26  </td> </tr>
 <tr> <td>resnet-50</td> <td> 36.02 </td> <td> 27.56 </td> <td> 16.15 </td> <td> 62.75 </td> <td> 46.21 </td> <td> 24.97 </td> <td> 68.06 </td> <td> 31.77 </td> <td> 39.18 </td> </tr>
 <tr> <td>resnet-101</td> <td> 36.76 </td> <td> 28.12 </td> <td> 16.52 </td> <td> 63.62 </td> <td> 47.03 </td> <td> 25.36 </td> <td> 68.43 </td> <td> 32.01 </td> <td> 39.73 </td> </tr>
-</table>  
-
+</table>
+  
+<table>
 <tr> <td colspan="9"> Dev Rare Predictions (<= 10 training examples) </td> </tr>
-<tr> <td>  </td><td colspan="3"> top-1 </td> <td colspan="3"> top-5 </td> <td colspan="2"> gold verbs </td> <td> mean </td> </tr>
+<tr> <td>  </td><td colspan="3"> top-1 </td> <td colspan="3"> top-5 </td> <td colspan="2"> gold verbs </td> <td>  </td> </tr>
 <tr> <td> </td> <td> verb </td> <td> value </td> <td> value-all </td> <td> verb </td> <td> value </td> <td> value-all </td> <td> value </td> <td> value-all </td> <td> mean </td>
 <tr> <td>vgg-16</td> <td>19.89 </td> <td> 11.68 </td> <td> 2.85 </td> <td> 44.00 </td> <td> 24.93 </td> <td> 6.16 </td> <td> 50.80 </td> <td> 9.97 </td> <td> 21.28 </td> </tr>
 <tr> <td>resnet-34</td> <td> 19.24 </td> <td> 10.35 </td> <td> 1.06 </td> <td> 42.34 </td> <td> 22.34 </td> <td> 2.73 </td> <td> 48.48 </td> <td> 4.66 </td> <td> 18.90 </td> </tr>
