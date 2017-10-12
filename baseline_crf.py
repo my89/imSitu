@@ -264,7 +264,7 @@ class baseline_crf(nn.Module):
    #returns the max index of every vector, max value of each vector and the log_sum_exp of the vector
    def log_sum_exp(self,vec):
      max_score, max_i = torch.max(vec,1)
-     max_score_broadcast = max_score.expand_as(vec)
+     max_score_broadcast = max_score.view(-1,1).expand(vec.size())
      return (max_i , max_score,  max_score + torch.log(torch.sum(torch.exp(vec - max_score_broadcast),1)))
 
    def forward_max(self, images):
