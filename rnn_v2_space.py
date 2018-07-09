@@ -1,4 +1,3 @@
-from torch.optim.lr_scheduler import ReduceLROnPlateau
 import os
 import time
 from torch import optim
@@ -79,7 +78,7 @@ class resnet_modified_medium(nn.Module):
     self.dropout = nn.Dropout(global_dropout)
     self.relu = nn.LeakyReLU()
     #initLinear(self.linear)
-    self.avg = nn.AvgPool2d(16)
+    self.avg = nn.AvgPool2d(8)
 
  def base_size(self): return 2048
  def rep_size(self): return 2048
@@ -103,7 +102,7 @@ class resnet_modified_medium(nn.Module):
 class resnet_modified_medium_spatial(nn.Module):
  def __init__(self):
     super(resnet_modified_medium_spatial, self).__init__()
-    self.resnet = tv.models.resnet50(pretrained=True)
+    self.resnet = tv.models.resnet34(pretrained=True)
     self.l4 = []
     self.resnet2_l4_r = []
     
@@ -116,11 +115,11 @@ class resnet_modified_medium_spatial(nn.Module):
     
     #self.dropout = nn.Dropout(global_dropout)
 
-    self.avg = nn.AvgPool2d(16)
+    self.avg = nn.AvgPool2d(8)
     self.combine = nn.Conv2d(512, 512, 1)
  
-    inplanes = 2048
-    planes = 1024
+    inplanes = 512
+    planes = 256
     self.combine_conv1 = nn.Conv2d(64+256+inplanes, planes, kernel_size=1, bias=False)
     self.combine_bn1 = []
     self.combine_bn2 = [] 
@@ -146,8 +145,8 @@ class resnet_modified_medium_spatial(nn.Module):
     #rv.extend(self.resnet2_l4_r.parameters())
     return rv
  
- def base_size(self): return 2048
- def rep_size(self): return 2048
+ def base_size(self): return 512
+ def rep_size(self): return 512
 
  def forward(self, x):
         x = self.resnet.conv1(x)
@@ -166,7 +165,7 @@ class resnet_modified_medium_spatial(nn.Module):
      
         #B x C x H x W
         #x = self.dropout2d(x)
-        x2 = self.avg(x).view(-1, 2048)
+        x2 = self.avg(x).view(-1, 512)
         return (x, x2)
  
  def forward_regulated(self, i, x, residual):#, r, b):
@@ -190,7 +189,7 @@ class resnet_modified_medium_spatial(nn.Module):
         out += residual
         out = self.combine_relu(out)
       
-        x2 = self.avg(out).view(-1, 2048)
+        x2 = self.avg(out).view(-1, 512)
 
         return (out, x2)
          
@@ -202,7 +201,7 @@ class resnet_modified_medium_spatial_l4(nn.Module):
     resnet = tv.models.resnet50(pretrained=True)
     self.layer4 = resnet.layer4
     #self.resnet2 = tv.models.resnet50(pretrained=True)
-    self.avg = nn.AvgPool2d(16)
+    self.avg = nn.AvgPool2d(8)
 
  def base_size(self): return 2048
  def rep_size(self): return 2048
@@ -250,8 +249,8 @@ class resnet_modified_small(nn.Module):
 
 class baseline_predictor(nn.Module):
    
-   from retina.caffe2.retinanet import Caffe2Model
-   from retina.caffe2.retinanet import get_targets
+   #from retina.caffe2.retinanet import Caffe2Model
+   #from retina.caffe2.retinanet import get_targets
    from math import log
    def initConvs(self, modules, std=.01, b=0):
       for m in modules: 
@@ -352,23 +351,24 @@ class rnn_predictor_spatial(nn.Module):
    def dev_preprocess(self): return self.dev_transform
    def set_train_mode(self, mode): self.train_mode = mode
    #these seem like decent splits of imsitu, freq = 0,50,100,282 , prediction type can be "max_max" or "max_marginal"
-   def __init__(self, encoding, ngpus = 4, cnn_type = "resnet_34", v_rep_size=256, r_rep_size=256, n_rep_size = 256, hidden_size = 1024, norm_vision = False, feed_self = False, fine_tune_cnn = True, attention = False ):
+   def __init__(self, encoding, ngpus = 4, cnn_type = "resnet_34", v_rep_size=256, r_rep_size=256, n_rep_size = 256, hidden_size = 1024, norm_vision = False, feed_self = False, fine_tune_cnn = True, attention = False, spatial = False ):
      super(rnn_predictor_spatial, self).__init__()
+     self.spatial = spatial
      self.attention = attention 
      self.hidden_size = hidden_size
      self.norm_vision = norm_vision
      self.feed_self = feed_self
      self.normalize = tv.transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
      self.train_transform = tv.transforms.Compose([
-            #tv.transforms.Scale(512),
-            tv.transforms.RandomCrop(512),
+            tv.transforms.Scale(256),
+            tv.transforms.RandomCrop(256),
             tv.transforms.RandomHorizontalFlip(),
             tv.transforms.ToTensor(),
             self.normalize,
         ])
      self.dev_transform = tv.transforms.Compose([
-            #tv.transforms.Scale(512),
-            tv.transforms.CenterCrop(512),
+            tv.transforms.Scale(256),
+            tv.transforms.CenterCrop(256),
             tv.transforms.ToTensor(),
             self.normalize,
         ])
@@ -403,6 +403,7 @@ class rnn_predictor_spatial(nn.Module):
        exit()
      
      self.rep_size = self.cnn_n.rep_size()
+     #print(self.rep_size)
      self.embedding_v = nn.Embedding(self.encoding.n_verbs(), v_rep_size) 
      self.embedding_n = nn.Embedding(self.encoding.n_nouns()+1, n_rep_size)
      self.embedding_r = nn.Embedding(self.encoding.n_roles(), r_rep_size)
@@ -411,17 +412,17 @@ class rnn_predictor_spatial(nn.Module):
      self.noun_project = nn.Linear(self.rep_size, n_rep_size)     
      self.noun_linear = nn.Linear(hidden_size, self.encoding.n_nouns())
      
-     self.attend_rep = 32
-     self.attention_network_c1 = nn.Conv2d(v_rep_size + r_rep_size + self.rep_size, self.rep_size, 1)
-     self.attention_network_relu1 = nn.ReLU()
-     self.attention_network_bn1 = nn.BatchNorm2d(self.rep_size) 
-     self.attention_network_c2 = nn.Conv2d(self.rep_size+1, self.attend_rep, 3, padding = 1)
-     self.attention_network_relu2 = nn.ReLU()
-     self.attention_network_c3 = nn.Conv2d(self.attend_rep, self.attend_rep, 3, padding = 1)
-     self.attention_network_relu3 = nn.ReLU()
-     self.attention_network_bn2 = nn.BatchNorm2d(self.attend_rep)
-     self.attention_network_c4 = nn.Conv2d(self.attend_rep, 1, 1)   
-     self.attention_avg = nn.AvgPool2d(16)
+     #self.attend_rep = 32
+     #self.attention_network_c1 = nn.Conv2d(v_rep_size + r_rep_size + self.rep_size, self.rep_size, 1)
+     #self.attention_network_relu1 = nn.ReLU()
+     #self.attention_network_bn1 = nn.BatchNorm2d(self.rep_size) 
+     #self.attention_network_c2 = nn.Conv2d(self.rep_size+1, self.attend_rep, 3, padding = 1)
+     #self.attention_network_relu2 = nn.ReLU()
+     #self.attention_network_c3 = nn.Conv2d(self.attend_rep, self.attend_rep, 3, padding = 1)
+     #self.attention_network_relu3 = nn.ReLU()
+     #self.attention_network_bn2 = nn.BatchNorm2d(self.attend_rep)
+     #self.attention_network_c4 = nn.Conv2d(self.attend_rep, 1, 1)   
+     #self.attention_avg = nn.AvgPool2d(16)
     
      self.regulator_output = 1024
      self.regulator_l1 = nn.Linear(v_rep_size, self.regulator_output)
@@ -470,6 +471,7 @@ class rnn_predictor_spatial(nn.Module):
    def set_ft(self, v):
      print("setting ft to {}".format(v))
      for i in self.cnn_n.non_combine_params(): i.requires_grad = v
+
      #for i in self.cnn_l4.parameters(): i.requires_grad = v
 
    def get_roles(self,verb_vector):
@@ -560,6 +562,7 @@ class rnn_predictor_spatial(nn.Module):
      #we need a preterminal spatial map
      #spatial_rep_n, rep_n, cache = self.cnn_n(image)
      spatial_rep, rep_n = self.cnn_n(image)
+     #print(rep_n.size())
      cache_b , cache_c, cache_h, cache_w = spatial_rep.size()
      cache_transposed = spatial_rep.permute(0, 2, 3, 1)
      rep_v = rep_n
@@ -586,19 +589,13 @@ class rnn_predictor_spatial(nn.Module):
      noun_maxes = []
      mi = Variable(torch.LongTensor([self.encoding.n_nouns()]).cuda()).expand(b) #start symbol
      statep = (Variable(torch.zeros((1, b, self.hidden_size)).cuda()), None)
-          #prev_attn = Variable(torch.zeros((b, 1, 16, 16)).cuda()) #hard coded for 512 :/
-     #viz = rep_n
-
-          #regulator = self.regulator_l1(regulator_input).view(cache_b, 1, cache_c/2).expand(cache_b, cache_h*cache_w, cache_c/2).view(cache_b, cache_h, cache_w, cache_c/2)
-     #regulator2 = self.regulator_l2(regulator_input).view(cache_b, 1, cache_c/2).expand(cache_b, cache_h*cache_w, cache_c/2).view(cache_b, cache_h, cache_w, cache_c/2)
-     #regulator = regulator.permute(0,3,1,2)
-     #regulator2 = regulator2.permute(0,3,1,2)
-
      for x in range(0, mr):
-      # (viz, prev_attn) = self.image_rep(spatial_rep_n, torch.cat([ve.view(b,1,-1), self.embedding_r(roles[x]).view(b,1,-1)], dim=2), prev_attn)
-       regulator_input = torch.cat([torch.cat([ve.view(b,-1), self.embedding_r(roles[x]).view(b,-1)], dim=1).view(b,1,-1).expand(b, cache_h*cache_w, -1).view(b, cache_h, cache_w, -1), cache_transposed], 3).permute(0, 3, 1, 2)
+       if self.spatial:
+         regulator_input = torch.cat([torch.cat([ve.view(b,-1), self.embedding_r(roles[x]).view(b,-1)], dim=1).view(b,1,-1).expand(b, cache_h*cache_w, -1).view(b, cache_h, cache_w, -1), cache_transposed], 3).permute(0, 3, 1, 2)
 
-       (_,viz) = self.cnn_n.forward_regulated(x, regulator_input, spatial_rep)#spatial_rep)#, regulator, regulator2)
+         
+         (_,viz) = self.cnn_n.forward_regulated(x, regulator_input, spatial_rep)#spatial_rep)#, regulator, regulator2)
+         #print(viz.size()) 
        outputp = torch.cat([ve.view(b,1,-1), self.embedding_r(roles[x]).view(b,1,-1),self.embedding_n(mi).view(b, 1, -1),viz.view(b,1,-1)], dim=2)
      
        if x > 0 : output, statex = self.noun_model(outputp, statep)
@@ -716,7 +713,7 @@ class rnn_predictor(nn.Module):
      self.normalize = tv.transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
      self.train_transform = tv.transforms.Compose([
             #tv.transforms.Scale(512),
-            tv.transforms.RandomCrop(512),
+            tv.transforms.RandomCrop(256),
             tv.transforms.RandomHorizontalFlip(),
             tv.transforms.ToTensor(),
             self.normalize,
@@ -724,7 +721,7 @@ class rnn_predictor(nn.Module):
 
      self.dev_transform = tv.transforms.Compose([
             #tv.transforms.Scale(256),
-            tv.transforms.CenterCrop(512),
+            tv.transforms.CenterCrop(256),
             tv.transforms.ToTensor(),
             self.normalize,
         ])
@@ -790,10 +787,13 @@ class rnn_predictor(nn.Module):
        nn.init.orthogonal(p.data)
        #print(p) 
 
-
      if not fine_tune_cnn: 
-       for i in self.cnn_n.parameters(): i.requires_grad = False
- 
+       self.set_ft(False)
+
+   def set_ft(self, v):
+     print("setting ft to {}".format(v))
+     for i in self.cnn_n.parameters(): i.requires_grad = v
+
    def get_roles(self,verb_vector):
      rv = []
      for _v in verb_vector.cpu().view(-1):
@@ -809,7 +809,7 @@ class rnn_predictor(nn.Module):
    def forward(self, image, control, target = None):
      if control == "topk": return self.forward_test_topk(image, target) 
      elif control == "topk_verbs": return self.forward_test_topk_verb(image, target) 
-     elif control == "given_verb": return self.forward_test_given_verb(image, target)
+     #elif control == "given_verb": return self.forward_test_given_verb(image, target)
       
      rep_n = self.cnn_n(image)
      rep_v = rep_n
@@ -848,7 +848,7 @@ class rnn_predictor(nn.Module):
        #if self.train: outputp = self.embedding_n(nouns[x])
        #else:
        #if feed_self is true, you DO NOT use gt 
-       if not self.feed_self and self.train: 
+       if control != "given_verb" and not self.feed_self and self.train: 
          mi = nouns[x]
        statep = statex
 
@@ -1256,7 +1256,7 @@ def transform_noun(encoding,target):
 def train_model(max_epoch, eval_frequency, train_loader, dev_loader, model, encoding, optimizer, save_dir, timing = False, mode = 'joint', bug = False): 
     model.train()
 
-    scheduler = ReduceLROnPlateau(optimizer, mode="max", factor = .1, verbose = True, min_lr=1e-6)
+    #scheduler = ReduceLROnPlateau(optimizer, mode="max", factor = .1, verbose = True, min_lr=1e-6)
 
     time_all = time.time()
 
@@ -1347,7 +1347,7 @@ def train_model(max_epoch, eval_frequency, train_loader, dev_loader, model, enco
           maxv = max(avg_scores)
           torch.save(model.state_dict(), save_dir + "/{0}.model".format(maxv))   
           if len(avg_scores) > 1: print("diff = {}".format(maxv - pmax))
-          if maxv == avg_scores[-1] and (len(avg_scores) < 2 or (maxv - pmax > .001)) : 
+          if maxv == avg_scores[-1] and (len(avg_scores) < 2 or (maxv - pmax > .0001)) : 
           #  torch.save(model.state_dict(), save_dir + "/{0}.model".format(maxv))   
             print("continuing, new best model saved! {0}".format(maxv))
           else:
@@ -1419,7 +1419,7 @@ if __name__ == "__main__":
     else:
       encoder = torch.load(args.encoding_file)
   
-    model = rnn_predictor_spatial(encoder, cnn_type = args.cnn_type, ngpus=args.ngpus, hidden_size = args.hidden_rep, v_rep_size = args.verb_rep, r_rep_size = args.role_rep, n_rep_size = args.noun_rep, norm_vision = args.norm_vision, feed_self = args.feed_self, fine_tune_cnn = args.fine_tune_cnn, attention = args.attention)
+    model = rnn_predictor_spatial(encoder, cnn_type = args.cnn_type, ngpus=args.ngpus, hidden_size = args.hidden_rep, v_rep_size = args.verb_rep, r_rep_size = args.role_rep, n_rep_size = args.noun_rep, norm_vision = args.norm_vision, feed_self = args.feed_self, fine_tune_cnn = args.fine_tune_cnn, spatial = True)#, attention = args.attention)
     
     if args.weights_file is not None:
       model.load_state_dict(torch.load(args.weights_file))
