@@ -21,12 +21,12 @@ class imSituTensorEvaluation():
     (b,tv,l) = encoded_predictions.size()
     for i in range(0,b):
       _pred = encoded_predictions[i]
-      _ref = encoded_reference[i]
+      _ref = encoded_reference[i].cpu()
       _sorted_idx = sorted_idx[i]
       if image_names is not None: _image = image_names[i]
 
       lr = _ref.size()[0]     
-      max_r = (lr - 1)/2/self.nref
+      max_r = int((lr - 1)/2/self.nref)
 
       gt_v = _ref[0]
       if image_names is not None and _image in self.image_group: sc_key = (gt_v, self.image_group[_image])
@@ -37,7 +37,7 @@ class imSituTensorEvaluation():
         self.score_cards[sc_key] = new_card
       
       v_roles = []
-      for k in range(0,max_r):
+      for k in range(0,int(max_r)):
         _id = _ref[2*k + 1]
         if _id == -1: break
         v_roles.append(_id)
@@ -48,7 +48,7 @@ class imSituTensorEvaluation():
      
       k = 0
       p_frame = None
-      verb_found = (torch.sum(_sorted_idx[0:self.topk] == gt_v) == 1)
+      verb_found = (torch.sum(_sorted_idx.cpu()[0:self.topk] == gt_v) == 1)
       if verb_found: _score_card["verb"] += 1
       p_frame = _pred[gt_v]  
       all_found = True
@@ -56,12 +56,12 @@ class imSituTensorEvaluation():
 #      print _ref
 #      print len(v_roles)
       for k in range(0, len(v_roles)):
-        nv = p_frame[k]
+        nv = p_frame[k].cpu()
         found = False
         for r in range(0,self.nref):
 #          print nv
 #          print _ref[1 + 2*max_r*r + 2*k+1]
-          if nv == _ref[1 + 2*max_r*r + 2*k+1]:
+          if (nv == _ref[1 + 2*max_r*r + 2*k+1]) :
             found = True
             break
         if not found: all_found = False
@@ -297,8 +297,10 @@ class imSituVerbRoleLocalNounEncoder(imSituVerbRoleNounEncoder):
     for frame in situation["frames"]:
       _fr = {}
       for (vr,vrn) in frame:
+        vrn = vrn.item()
+        #print(self.vr_id_n) 
         if vrn not in self.vr_id_n[vr]: 
-          print "index error, verb = {}".format(verb)
+          print("index error, verb = {}".format(verb))
           n = -1
         else:
           n = self.id_n[self.vr_id_n[vr][vrn]]

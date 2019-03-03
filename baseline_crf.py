@@ -163,12 +163,12 @@ class baseline_crf(nn.Module):
      self.split_vr = {}
      self.v_roles = {}
      #cnn
-     print cnn_type
+     print(cnn_type)
      if cnn_type == "resnet_101" : self.cnn = resnet_modified_large()
      elif cnn_type == "resnet_50": self.cnn = resnet_modified_medium()
      elif cnn_type == "resnet_34": self.cnn = resnet_modified_small()
      else: 
-       print "unknown base network" 
+       print("unknown base network")
        exit()
      self.rep_size = self.cnn.rep_size()
      for s in range(0,len(splits)): self.split_vr[s] = []
@@ -240,7 +240,7 @@ class baseline_crf(nn.Module):
      self.linear_vrn = nn.ModuleList([ nn.Linear(self.rep_size, splits[i]*len(self.split_vr[i])) for i in range(0,len(splits))])
      self.total_vrn = 0
      for i in range(0, len(splits)): self.total_vrn += splits[i]*len(self.split_vr[i])
-     print "total encoding vrn : {0}, with padding in {1} groups : {2}".format(encoding.n_verbrolenoun(), self.total_vrn, len(splits))    
+     print("total encoding vrn : {0}, with padding in {1} groups : {2}".format(encoding.n_verbrolenoun(), self.total_vrn, len(splits))) 
 
      #initilize everything
      initLinear(self.linear_v)
@@ -351,7 +351,7 @@ class baseline_crf(nn.Module):
      elif self.prediction_type == "max_marginal":
        rv = (rep, v_potential, vrn_potential, norm, v_marginal, vr_maxi_grouped) 
      else:
-       print "unkown inference type"
+       print("unkown inference type")
        rv = ()
      return rv
 
@@ -381,9 +381,9 @@ class baseline_crf(nn.Module):
          for (pos,(s, idx, rid)) in enumerate(self.v_roles[v]):
            pots = pots + _vrn[s][idx][_ref[1 + 2*mr*r + 2*pos + 1]]
          if pots.data[0] > _norm.data[0]: 
-           print "inference error"
-           print pots
-           print _norm
+           print("inference error")
+           print(pots)
+           print (_norm)
          if i == 0 and r == 0: loss = pots-_norm
          else: loss = loss + pots - _norm
      return -loss/(batch_size*n_refs)
@@ -401,14 +401,14 @@ class baseline_crf(nn.Module):
        for r in range(0,n_refs):
          v = _ref[0]
          pots = _v[v]
-         for (pos,(s, idx, rid)) in enumerate(self.v_roles[v]):
+         for (pos,(s, idx, rid)) in enumerate(self.v_roles[v.item()]):
        #    print _vrn[s][idx][_ref[1 + 2*mr*r + 2*pos + 1]]
 #_vrn[s][idx][
            pots = pots + _vrn[s][idx][_ref[1 + 2*mr*r + 2*pos + 1]]
-         if pots.data[0] > _norm.data[0]: 
-           print "inference error"
-           print pots
-           print _norm
+         if pots.item() > _norm.item(): 
+           print("inference error")
+           print(pots)
+           print(_norm)
          if r == 0: _tot = pots-_norm 
          else : _tot = self.logsumexp_nx_ny_xy(_tot, pots-_norm)
        if i == 0: loss = _tot
@@ -424,10 +424,10 @@ def format_dict(d, s, p):
 
 def predict_human_readable (dataset_loader, simple_dataset,  model, outdir, top_k):
   model.eval()  
-  print "predicting..." 
+  print("predicting...")
   mx = len(dataset_loader) 
   for i, (input, index) in enumerate(dataset_loader):
-      print "{}/{} batches".format(i+1,mx)
+      print ("{}/{} batches".format(i+1,mx))
       input_var = torch.autograd.Variable(input.cuda(), volatile = True)
       (scores,predictions)  = model.forward_max(input_var)
       #(s_sorted, idx) = torch.sort(scores, 1, True)
@@ -438,7 +438,7 @@ def predict_human_readable (dataset_loader, simple_dataset,  model, outdir, top_
         offset = _b *p
         for _p in range(0, p):
           items.append(human[offset + _p])
-          items[-1]["score"] = scores.data[_b][_p]
+          items[-1]["score"] = scores.data[_b][_p].item()
         items = sorted(items, key = lambda x: -x["score"])[:top_k]
         name = simple_dataset.images[index[_b][0]].split(".")[:-1]
         name.append("predictions")
@@ -448,10 +448,10 @@ def predict_human_readable (dataset_loader, simple_dataset,  model, outdir, top_
 
 def compute_features(dataset_loader, simple_dataset,  model, outdir):
   model.eval()  
-  print "computing features..." 
+  print ("computing features...")
   mx = len(dataset_loader) 
   for i, (input, index) in enumerate(dataset_loader):
-      print "{}/{} batches\r".format(i+1,mx) ,
+      print ("{}/{} batches\r".format(i+1,mx)) ,
       input_var = torch.autograd.Variable(input.cuda(), volatile = True)
       features  = model.forward_features(input_var).cpu().data
       b = index.size()[0]
@@ -460,17 +460,17 @@ def compute_features(dataset_loader, simple_dataset,  model, outdir):
         name.append("features")
         outfile = outdir + ".".join(name)
         torch.save(features[_b], outfile)
-  print "\ndone."
+  print ("\ndone.")
 
 def eval_model(dataset_loader, encoding, model):
     model.eval()
-    print "evaluating model..."
+    print ("evaluating model...")
     top1 = imSituTensorEvaluation(1, 3, encoding)
     top5 = imSituTensorEvaluation(5, 3, encoding)
  
     mx = len(dataset_loader) 
     for i, (index, input, target) in enumerate(dataset_loader):
-      print "{}/{} batches\r".format(i+1,mx) ,
+      print ("{}/{} batches\r".format(i+1,mx)) ,
       input_var = torch.autograd.Variable(input.cuda(), volatile = True)
       target_var = torch.autograd.Variable(target.cuda(), volatile = True)
       (scores,predictions)  = model.forward_max(input_var)
@@ -478,7 +478,7 @@ def eval_model(dataset_loader, encoding, model):
       top1.add_point(target, predictions.data, idx.data)
       top5.add_point(target, predictions.data, idx.data)
       
-    print "\ndone."
+    print ("\ndone.")
     return (top1, top5) 
 
 def train_model(max_epoch, eval_frequency, train_loader, dev_loader, model, encoding, optimizer, save_dir, timing = False): 
@@ -506,48 +506,48 @@ def train_model(max_epoch, eval_frequency, train_loader, dev_loader, model, enco
         (_,v,vrn,norm,scores,predictions)  = pmodel(input_var)
         (s_sorted, idx) = torch.sort(scores, 1, True)
         #print norm 
-        if timing : print "forward time = {}".format(time.time() - t1)
+        if timing : print ("forward time = {}".format(time.time() - t1))
         optimizer.zero_grad()
         t1 = time.time()
         loss = model.mil_loss(v,vrn,norm, target, 3)
-        if timing: print "loss time = {}".format(time.time() - t1)
+        if timing: print ("loss time = {}".format(time.time() - t1))
         t1 = time.time()
         loss.backward()
         #print loss
-        if timing: print "backward time = {}".format(time.time() - t1)
+        if timing: print ("backward time = {}".format(time.time() - t1))
         optimizer.step()
-        loss_total += loss.data[0]
+        loss_total += loss.item()
         #score situation
         t2 = time.time() 
         top1.add_point(target, predictions.data, idx.data)
         top5.add_point(target, predictions.data, idx.data)
      
-        if timing: print "eval time = {}".format(time.time() - t2)
-        if timing: print "batch time = {}".format(time.time() - t0)
+        if timing: print ("eval time = {}".format(time.time() - t2))
+        if timing: print ("batch time = {}".format(time.time() - t0))
         if total_steps % print_freq == 0:
            top1_a = top1.get_average_results()
            top5_a = top5.get_average_results()
-           print "{},{},{}, {} , {}, loss = {:.2f}, avg loss = {:.2f}, batch time = {:.2f}".format(total_steps-1,k,i, format_dict(top1_a, "{:.2f}", "1-"), format_dict(top5_a,"{:.2f}","5-"), loss.data[0], loss_total / ((total_steps-1)%eval_frequency) , (time.time() - time_all)/ ((total_steps-1)%eval_frequency))
+           print ("{},{},{}, {} , {}, loss = {:.2f}, avg loss = {:.2f}, batch time = {:.2f}".format(total_steps-1,k,i, format_dict(top1_a, "{:.2f}", "1-"), format_dict(top5_a,"{:.2f}","5-"), loss.item(), loss_total / ((total_steps-1)%eval_frequency) , (time.time() - time_all)/ ((total_steps-1)%eval_frequency)))
         if total_steps % eval_frequency == 0:
-          print "eval..."    
+          print ("eval..."    )
           etime = time.time()
           (top1, top5) = eval_model(dev_loader, encoding, model)
           model.train() 
-          print "... done after {:.2f} s".format(time.time() - etime)
+          print ("... done after {:.2f} s".format(time.time() - etime))
           top1_a = top1.get_average_results()
           top5_a = top5.get_average_results()
 
           avg_score = top1_a["verb"] + top1_a["value"] + top1_a["value-all"] + top5_a["verb"] + top5_a["value"] + top5_a["value-all"] + top5_a["value*"] + top5_a["value-all*"]
           avg_score /= 8
 
-          print "Dev {} average :{:.2f} {} {}".format(total_steps-1, avg_score*100, format_dict(top1_a,"{:.2f}", "1-"), format_dict(top5_a, "{:.2f}", "5-"))
+          print ("Dev {} average :{:.2f} {} {}".format(total_steps-1, avg_score*100, format_dict(top1_a,"{:.2f}", "1-"), format_dict(top5_a, "{:.2f}", "5-")))
           
           avg_scores.append(avg_score)
           maxv = max(avg_scores)
 
           if maxv == avg_scores[-1]: 
             torch.save(model.state_dict(), save_dir + "/{0}.model".format(maxv))   
-            print "new best model saved! {0}".format(maxv)
+            print ("new best model saved! {0}".format(maxv))
 
           top1 = imSituTensorEvaluation(1, 3, encoding)
           top5 = imSituTensorEvaluation(5, 3, encoding)
@@ -574,7 +574,7 @@ if __name__ == "__main__":
 
   args = parser.parse_args()
   if args.command == "train":
-    print "command = training"
+    print ("command = training")
     train_set = json.load(open(args.dataset_dir+"/train.json"))
     dev_set = json.load(open(args.dataset_dir+"/dev.json"))
 
@@ -584,7 +584,8 @@ if __name__ == "__main__":
     else:
       encoder = torch.load(args.encoding_file)
   
-    model = baseline_crf(encoder, cnn_type = args.cnn_type)
+    ngpus = 1
+    model = baseline_crf(encoder, cnn_type = args.cnn_type, ngpus = ngpus)
     
     if args.weights_file is not None:
       model.load_state_dict(torch.load(args.weights_file))
@@ -592,7 +593,6 @@ if __name__ == "__main__":
     dataset_train = imSituSituation(args.image_dir, train_set, encoder, model.train_preprocess())
     dataset_dev = imSituSituation(args.image_dir, dev_set, encoder, model.dev_preprocess())
 
-    ngpus = 1
     device_array = [i for i in range(0,ngpus)]
     batch_size = args.batch_size*ngpus
 
@@ -604,22 +604,22 @@ if __name__ == "__main__":
     train_model(args.training_epochs, args.eval_frequency, train_loader, dev_loader, model, encoder, optimizer, args.output_dir)
   
   elif args.command == "eval":
-    print "command = evaluating"
+    print ("command = evaluating")
     eval_file = json.load(open(args.dataset_dir + "/" + args.eval_file))  
       
     if args.encoding_file is None: 
-      print "expecting encoder file to run evaluation"
+      print ("expecting encoder file to run evaluation")
       exit()
     else:
       encoder = torch.load(args.encoding_file)
-    print "creating model..." 
+    print ("creating model...")
     model = baseline_crf(encoder, cnn_type = args.cnn_type)
     
     if args.weights_file is None:
-      print "expecting weight file to run features"
+      print ("expecting weight file to run features")
       exit()
     
-    print "loading model weights..."
+    print ("loading model weights...")
     model.load_state_dict(torch.load(args.weights_file))
     model.cuda()
     
@@ -633,24 +633,24 @@ if __name__ == "__main__":
     avg_score = top1_a["verb"] + top1_a["value"] + top1_a["value-all"] + top5_a["verb"] + top5_a["value"] + top5_a["value-all"] + top5_a["value*"] + top5_a["value-all*"]
     avg_score /= 8
 
-    print "Average :{:.2f} {} {}".format(avg_score*100, format_dict(top1_a,"{:.2f}", "1-"), format_dict(top5_a, "{:.2f}", "5-"))
+    print ("Average :{:.2f} {} {}".format(avg_score*100, format_dict(top1_a,"{:.2f}", "1-"), format_dict(top5_a, "{:.2f}", "5-")))
        
   elif args.command == "features":
-    print "command = features"
+    print ("command = features")
     if args.encoding_file is None: 
-      print "expecting encoder file to run features"
+      print ("expecting encoder file to run features")
       exit()
     else:
       encoder = torch.load(args.encoding_file)
  
-    print "creating model..." 
+    print ("creating model...") 
     model = baseline_crf(encoder, cnn_type = args.cnn_type)
     
     if args.weights_file is None:
-      print "expecting weight file to run features"
+      print ("expecting weight file to run features")
       exit()
     
-    print "loading model weights..."
+    print ("loading model weights...")
     model.load_state_dict(torch.load(args.weights_file))
     model.cuda()
     
@@ -660,21 +660,21 @@ if __name__ == "__main__":
     compute_features(image_loader, folder_dataset, model, args.output_dir)    
 
   elif args.command == "predict":
-    print "command = predict"
+    print ("command = predict")
     if args.encoding_file is None: 
-      print "expecting encoder file to run features"
+      print ("expecting encoder file to run features")
       exit()
     else:
       encoder = torch.load(args.encoding_file)
  
-    print "creating model..." 
+    print ("creating model..." )
     model = baseline_crf(encoder, cnn_type = args.cnn_type)
  
     if args.weights_file is None:
-      print "expecting weight file to run features"
+      print ("expecting weight file to run features")
       exit()
     
-    print "loading model weights..."
+    print ("loading model weights...")
     model.load_state_dict(torch.load(args.weights_file))
     model.cuda()
 

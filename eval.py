@@ -23,15 +23,15 @@ def format_dict(d, s, p):
 # they can validate once, and then just make sure it works with imSituTensorEvaluation 
 def eval_model(dataset, dataset_loader, standard_encoding, model_encoding, model, trustedEncoder = False, image_group = {}):
     model.eval()
-    print "evaluating model..."
+    print ("evaluating model...")
     if trustedEncoder == False:
-      print "not using trusted encoder. This may take signficantly longer as predictions are converted to other encoding."
+      print ("not using trusted encoder. This may take signficantly longer as predictions are converted to other encoding.")
     mx = len(dataset_loader) 
     batches = []
     top1 = imSituTensorEvaluation(1, 3, image_group)
     top5 = imSituTensorEvaluation(5, 3, image_group)
     for i, (indexes, input, target) in enumerate(dataset_loader):
-      if True or i % 10 == 0: print "batch {} out of {}\r".format(i+1,mx),
+      if True or i % 10 == 0: print ("batch {} out of {}\r".format(i+1,mx)),
       input_var = torch.autograd.Variable(input.cuda(), volatile = True)
       #target_var = torch.autograd.Variable(target.cuda(), volatile = True)
       (scores,predictions)  = model.forward_max(input_var)
@@ -74,7 +74,7 @@ def eval_file(output, dataset, standard_encoding, image_group):
       curr_image =tabs[0]
       predictions = []
       order = []
-      print "batch {} out of {}\r".format(j,len(dataset)),
+      print ("batch {} out of {}\r".format(j,len(dataset))),
       #if j == 1000: return (top1,top5)
       j+=1
     image_id = tabs[0]
@@ -115,7 +115,7 @@ if __name__ == "__main__":
  
   args = parser.parse_args()
   if args.sparsity_min > (args.sparsity_max+1):
-    print "sparsity_min must be less than or equal to sparsity_max"
+    print ("sparsity_min must be less than or equal to sparsity_max")
     exit()
   train_set = json.load(open(args.dataset_dir+"/train.json"))
   #compute sparsity statistics 
@@ -150,11 +150,11 @@ if __name__ == "__main__":
      image_sparsity[image] = min_val
   if args.sparsity_max > -1:
     x = range(args.sparsity_min, args.sparsity_max+1)
-    print "evaluating images where most rare verb-role-noun in training is x , s.t. {} <= x <= {}".format(args.sparsity_min, args.sparsity_max)
+    print ("evaluating images where most rare verb-role-noun in training is x , s.t. {} <= x <= {}".format(args.sparsity_min, args.sparsity_max))
     n = 0
     for (k,v) in image_sparsity.items():
       if v in x: n+=1
-    print "total images = {}".format(n)
+    print ("total images = {}".format(n))
 
   if args.format == "model":
     standard_encoder = imSituVerbRoleNounEncoder(train_set)
@@ -162,17 +162,17 @@ if __name__ == "__main__":
     model_module = imp.load_source(mod_name, args.include)
     
     if args.encoding_file is None: 
-      print "expecting encoder file to run evaluation"
+      print ("expecting encoder file to run evaluation")
       exit()
     else:
       encoder = torch.load(args.encoding_file)
-    print "creating model..." 
+    print ("creating model...") 
     model = getattr(model_module, mod_name)(encoder)
     if args.weights_file is None:
-      print "expecting weight file to run features"
+      print ("expecting weight file to run features")
       exit()
     
-    print "loading model weights..."
+    print ("loading model weights...")
     model.load_state_dict(torch.load(args.weights_file))
     model.cuda()
 
@@ -187,7 +187,7 @@ if __name__ == "__main__":
   elif args.format == "file":
     standard_encoder = imSituVerbRoleNounEncoder(train_set)
     if args.system_output is None:
-      print "expecting output file"
+      print ("expecting output file")
       exit()
     (top1, top5) = eval_file(args.system_output, eval_dataset, standard_encoder, image_sparsity)
  
@@ -198,7 +198,7 @@ if __name__ == "__main__":
   avg_score = top1_a["verb"] + top1_a["value"] + top1_a["value-all"] + top5_a["verb"] + top5_a["value"] + top5_a["value-all"] + top5_a["value*"] + top5_a["value-all*"]
   avg_score /= 8
 
-  print "\ntop-1\n\tverb     \t{:.2f}%\n\tvalue    \t{:.2f}%\n\tvalue-all\t{:.2f}%\ntop-5\n\tverb     \t{:.2f}%\n\tvalue    \t{:.2f}%\n\tvalue-all\t{:.2f}%\ngold verbs\n\tvalue    \t{:.2f}%\n\tvalue-all\t{:.2f}%\nsummary \n\tmean    \t{:.2f}%".format(100*top1_a["verb"], 100*top1_a["value"], 100*top1_a["value-all"], 100*top5_a["verb"], 100*top5_a["value"], 100*top5_a["value-all"], 100*top5_a["value*"], 100*top5_a["value-all*"], 100*avg_score)
+  print ("\ntop-1\n\tverb     \t{:.2f}%\n\tvalue    \t{:.2f}%\n\tvalue-all\t{:.2f}%\ntop-5\n\tverb     \t{:.2f}%\n\tvalue    \t{:.2f}%\n\tvalue-all\t{:.2f}%\ngold verbs\n\tvalue    \t{:.2f}%\n\tvalue-all\t{:.2f}%\nsummary \n\tmean    \t{:.2f}%".format(100*top1_a["verb"], 100*top1_a["value"], 100*top1_a["value-all"], 100*top5_a["verb"], 100*top5_a["value"], 100*top5_a["value-all"], 100*top5_a["value*"], 100*top5_a["value-all*"], 100*avg_score))
 
 
   #print "Average :{:.2f} {} {}".format(avg_score*100, format_dict(top1_a,"{:.2f}", "1-"), format_dict(top5_a, "{:.2f}", "5-"))    
