@@ -18,6 +18,9 @@ from imsitu import imSituSimpleImageFolder
 from utils import initLinear
 import json
 
+device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+
+
 class vgg_modified(nn.Module):
   def __init__(self):
     super(vgg_modified,self).__init__()
@@ -228,9 +231,9 @@ class baseline_crf(nn.Module):
          self.v_vr[offset + k] = 0
          k+=1
      
-     gv_vr = Variable(torch.LongTensor(self.v_vr).cuda())#.view(self.encoding.n_verbs(), -1) 
+     gv_vr = Variable(torch.LongTensor(self.v_vr).to(device))#.view(self.encoding.n_verbs(), -1) 
      for g in range(0,ngpus):
-       self.broadcast.append(Variable(torch.LongTensor(self.v_vr).cuda(g)))
+       self.broadcast.append(Variable(torch.LongTensor(self.v_vr).to(device)))
      self.v_vr = gv_vr
      #print self.v_vr
 
@@ -305,8 +308,8 @@ class baseline_crf(nn.Module):
        vrn_marginal.append(_vrn_marginal)
      
      #concat role groups with the padding symbol 
-     zeros = Variable(torch.zeros(batch_size, 1).cuda()) #this is the padding 
-     zerosi = Variable(torch.LongTensor(batch_size,1).zero_().cuda())
+     zeros = Variable(torch.zeros(batch_size, 1).to(device)) #this is the padding 
+     zerosi = Variable(torch.LongTensor(batch_size,1).zero_().to(device))
      vrn_marginal.insert(0, zeros)
      vr_max.insert(0,zeros)
      vr_maxi.insert(0,zerosi)
@@ -320,7 +323,7 @@ class baseline_crf(nn.Module):
      #step 2 compute verb marginals
      #we need to reorganize the role potentials so it is BxVxR
      #gather the marginals in the right way
-     v_vr = self.broadcast[torch.cuda.current_device()] 
+     v_vr = self.broadcast[torch.cuda.current_device() if torch.cuda.is_available() else 0]
      vrn_marginal_grouped = vrn_marginal.index_select(1,v_vr).view(batch_size,self.n_verbs,self.encoding.max_roles())
      vr_max_grouped = vr_max.index_select(1,v_vr).view(batch_size, self.n_verbs, self.encoding.max_roles()) 
      vr_maxi_grouped = vr_maxi.index_select(1,v_vr).view(batch_size, self.n_verbs, self.encoding.max_roles())
@@ -428,7 +431,7 @@ def predict_human_readable (dataset_loader, simple_dataset,  model, outdir, top_
   mx = len(dataset_loader) 
   for i, (input, index) in enumerate(dataset_loader):
       print ("{}/{} batches".format(i+1,mx))
-      input_var = torch.autograd.Variable(input.cuda(), volatile = True)
+      input_var = torch.autograd.Variable(input.to(device), volatile = True)
       (scores,predictions)  = model.forward_max(input_var)
       #(s_sorted, idx) = torch.sort(scores, 1, True)
       human = encoder.to_situation(predictions)
@@ -452,8 +455,8 @@ def compute_features(dataset_loader, simple_dataset,  model, outdir):
   mx = len(dataset_loader) 
   for i, (input, index) in enumerate(dataset_loader):
       print ("{}/{} batches\r".format(i+1,mx)) ,
-      input_var = torch.autograd.Variable(input.cuda(), volatile = True)
-      features  = model.forward_features(input_var).cpu().data
+      input_var = torch.autograd.Variable(input.to(device), volatile = True)
+      features  = model.forward_features(input_var).to(device).data
       b = index.size()[0]
       for _b in range(0,b):
         name = simple_dataset.images[index[_b][0]].split(".")[:-1]
@@ -471,8 +474,8 @@ def eval_model(dataset_loader, encoding, model):
     mx = len(dataset_loader) 
     for i, (index, input, target) in enumerate(dataset_loader):
       print ("{}/{} batches\r".format(i+1,mx)) ,
-      input_var = torch.autograd.Variable(input.cuda(), volatile = True)
-      target_var = torch.autograd.Variable(target.cuda(), volatile = True)
+      input_var = torch.autograd.Variable(input.to(device), volatile = True)
+      target_var = torch.autograd.Variable(target.to(device), volatile = True)
       (scores,predictions)  = model.forward_max(input_var)
       (s_sorted, idx) = torch.sort(scores, 1, True)
       top1.add_point(target, predictions.data, idx.data)
@@ -501,8 +504,8 @@ def train_model(max_epoch, eval_frequency, train_loader, dev_loader, model, enco
         t0 = time.time()
         t1 = time.time() 
       
-        input_var = torch.autograd.Variable(input.cuda())
-        target_var = torch.autograd.Variable(target.cuda())
+        input_var = torch.autograd.Variable(input.to(device))
+        target_var = torch.autograd.Variable(target.to(device))
         (_,v,vrn,norm,scores,predictions)  = pmodel(input_var)
         (s_sorted, idx) = torch.sort(scores, 1, True)
         #print norm 
@@ -599,7 +602,7 @@ if __name__ == "__main__":
     train_loader  = torch.utils.data.DataLoader(dataset_train, batch_size = batch_size, shuffle = True, num_workers = 3) 
     dev_loader  = torch.utils.data.DataLoader(dataset_dev, batch_size = batch_size, shuffle = True, num_workers = 3) 
 
-    model.cuda()
+    model.to(device)
     optimizer = optim.Adam(model.parameters(), lr = args.learning_rate , weight_decay = args.weight_decay)
     train_model(args.training_epochs, args.eval_frequency, train_loader, dev_loader, model, encoder, optimizer, args.output_dir)
   
@@ -621,7 +624,7 @@ if __name__ == "__main__":
     
     print ("loading model weights...")
     model.load_state_dict(torch.load(args.weights_file))
-    model.cuda()
+    model.to(device)
     
     dataset = imSituSituation(args.image_dir, eval_file, encoder, model.dev_preprocess())
     loader  = torch.utils.data.DataLoader(dataset, batch_size = args.batch_size, shuffle = True, num_workers = 3) 
@@ -652,7 +655,7 @@ if __name__ == "__main__":
     
     print ("loading model weights...")
     model.load_state_dict(torch.load(args.weights_file))
-    model.cuda()
+    model.to(device)
     
     folder_dataset = imSituSimpleImageFolder(args.image_dir, model.dev_preprocess())
     image_loader  = torch.utils.data.DataLoader(folder_dataset, batch_size = args.batch_size, shuffle = False, num_workers = 3) 
@@ -676,7 +679,7 @@ if __name__ == "__main__":
     
     print ("loading model weights...")
     model.load_state_dict(torch.load(args.weights_file))
-    model.cuda()
+    model.to(device)
 
     folder_dataset = imSituSimpleImageFolder(args.image_dir, model.dev_preprocess())
     image_loader  = torch.utils.data.DataLoader(folder_dataset, batch_size = args.batch_size, shuffle = False, num_workers = 3) 
