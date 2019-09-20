@@ -90,7 +90,7 @@ https://s3.amazonaws.com/my89-frame-annotation/public/of500_images_resized.tar
 
 Original images can be found here (34G) :
 
-https://s3.amazonaws.com/my89-frame-annotation/public/of500_images_resized.tar
+https://s3.amazonaws.com/my89-frame-annotation/public/of500_images.tar
 
 ## Evaluation
 
