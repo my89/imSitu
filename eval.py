@@ -167,10 +167,11 @@ if __name__ == "__main__":
     else:
       encoder = torch.load(args.encoding_file)
     print ("creating model...") 
-    model = getattr(model_module, mod_name)(encoder)
     if args.weights_file is None:
       print ("expecting weight file to run features")
       exit()
+    cnn_type = os.path.basename(args.weights_file).split('_', maxsplit=1)[1]
+    model = getattr(model_module, mod_name)(encoder, cnn_type=cnn_type)
     
     print ("loading model weights...")
     model.load_state_dict(torch.load(args.weights_file))
